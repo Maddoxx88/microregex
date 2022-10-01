@@ -1,0 +1,7 @@
+{
+    "useTabs": true,
+    "printWidth": 130,
+    "tabWidth": 4,
+    "jsxSingleQuote": true,
+    "parser": "typescript"
+}
