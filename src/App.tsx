@@ -9,17 +9,17 @@ import theme from "./theme";
 function App() {
 	return (
 		<ChakraProvider theme={theme}>
-			<Box minH='100vh'>
-				<Navbar />
+			<Router>
+				<Box minH="100vh">
+					<Navbar />
 
-				<Box minH='calc(100vh - 60px)'>
-					<Router>
+					<Box minH="calc(100vh - 60px)" h="calc(100vh - 60px)" overflowY="auto" overflowX="hidden">
 						<Routes>
-							<Route path='/' element={<HomePage />} />
+							<Route path="/" element={<HomePage />} />
 						</Routes>
-					</Router>
+					</Box>
 				</Box>
-			</Box>
+			</Router>
 		</ChakraProvider>
 	);
 }
