@@ -32,14 +32,15 @@ export default function HomePage() {
 		tags: [],
 	});
 
-	const handleSetFilter = React.useCallback(
-		debounce((key: FilterKeyType, value) => {
-			if (!_.isEqual(filterRef.current[key], value)) {
-				filterRef.current = { ...filterRef.current, [key]: value };
+	const handleSetFilter = React.useMemo(
+		() =>
+			debounce((key: FilterKeyType, value) => {
+				if (!_.isEqual(filterRef.current[key], value)) {
+					filterRef.current = { ...filterRef.current, [key]: value };
 
-				console.log(filterRef.current);
-			}
-		}, 350),
+					console.log(filterRef.current);
+				}
+			}, 350),
 		[]
 	);
 
