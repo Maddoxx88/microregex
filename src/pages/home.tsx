@@ -1,9 +1,10 @@
 import React, { useRef, useState } from "react";
-import { Flex, Box } from "@chakra-ui/react";
+import { Flex, Box, useMediaQuery, useToken, Grid, GridItem } from "@chakra-ui/react";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import { Tag, TagLabel } from "@chakra-ui/tag";
 import { SearchIcon } from "@chakra-ui/icons";
 import _, { debounce } from "lodash";
+import Card from "../components/card";
 
 type Filter = {
 	search: string;
@@ -24,6 +25,9 @@ const filterTypes: FilterObject = {
 const filterList = Object.keys(filterTypes);
 
 export default function HomePage() {
+	const [lgSize] = useToken("sizes", ["container.md"]);
+	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
+
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [tags, setTags] = useState<TagsObject>({});
 
@@ -78,8 +82,8 @@ export default function HomePage() {
 	}, [tags]);
 
 	return (
-		<Flex justify="center" w="100vw" pt={10}>
-			<Box w="100%" maxW="container.md" px={6}>
+		<Flex justify="center" w="100vw" py={10}>
+			<Box w="100%" maxW="container.lg" px={6}>
 				<InputGroup colorScheme="gray">
 					<InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.500" />} />
 					<Input placeholder="Find your match" value={searchValue} onChange={handleSearchChange} />
@@ -111,6 +115,16 @@ export default function HomePage() {
 						);
 					})}
 				</Flex>
+
+				<Grid templateColumns={isLg ? "repeat(3, 1fr)" : "1fr"} gridGap={6} pt={3}>
+					{Array.from({ length: 21 }).map((_, elKey) => {
+						return (
+							<GridItem key={elKey}>
+								<Card />
+							</GridItem>
+						);
+					})}
+				</Grid>
 			</Box>
 		</Flex>
 	);
