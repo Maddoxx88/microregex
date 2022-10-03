@@ -1,10 +1,12 @@
-import React, { useRef, useState } from "react";
-import { Flex, Box, useMediaQuery, useToken, Grid, GridItem } from "@chakra-ui/react";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
-import { Tag, TagLabel } from "@chakra-ui/tag";
 import { SearchIcon } from "@chakra-ui/icons";
+import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
+import { Box, Flex, Grid, GridItem, useMediaQuery, useToken } from "@chakra-ui/react";
+import { Tag, TagLabel } from "@chakra-ui/tag";
+import { useNhostClient } from "@nhost/react";
 import _, { debounce } from "lodash";
+import React, { useEffect, useRef, useState } from "react";
 import Card from "../components/card";
+import { PATTERNS } from "../graphql/queries";
 
 type Filter = {
 	search: string;
@@ -25,6 +27,8 @@ const filterTypes: FilterObject = {
 const filterList = Object.keys(filterTypes);
 
 export default function HomePage() {
+	const nhost = useNhostClient();
+
 	const [lgSize] = useToken("sizes", ["container.md"]);
 	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
 
@@ -80,6 +84,17 @@ export default function HomePage() {
 
 		return false;
 	}, [tags]);
+
+	useEffect(() => {
+		const url = nhost.graphql.getUrl();
+		console.log(`url: ${url}`);
+		async function anyNameFunction() {
+			const { data, error } = await nhost.graphql.request(PATTERNS);
+			console.log(data.patterns);
+		}
+		anyNameFunction();
+		// https://wwgsiqjwetcrvgptnyta.graphql.ap-south-1.nhost.run/v1
+	}, []);
 
 	return (
 		<Flex justify="center" w="100vw" py={10}>
