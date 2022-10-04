@@ -14,6 +14,7 @@ export default function Card({}: Props) {
 			status: "success",
 			icon: <CopyIcon fontSize="xl" />,
 			duration: 750,
+			isClosable: true,
 		});
 	}, 750);
 
@@ -30,13 +31,16 @@ export default function Card({}: Props) {
 			borderRadius={6}
 			boxShadow="0 0 6px 2px rgba(0, 0, 0, 0.075)"
 			p={4}
+			transition="box-shadow ease-in 175ms"
 			_hover={{ boxShadow: "0 0 6px 2px rgba(0, 0, 0, 0.25)" }}
 			onClick={handleCardClick}
 			cursor="pointer"
 		>
 			<Flex flexDir="column" position="relative" w="100%" h="100%">
 				<Flex align="center" fontWeight={600} fontSize="1.25rem" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
-					<Text onClick={handlePreventClickPassthrough}>Title</Text>
+					<Text onClick={handlePreventClickPassthrough} cursor="default">
+						Title
+					</Text>
 				</Flex>
 
 				<IconButton
@@ -66,7 +70,7 @@ export default function Card({}: Props) {
 						variant="solid"
 						marginInlineStart={0}
 						marginInlineEnd={2}
-						cursor="pointer"
+						cursor="default"
 					>
 						<TagLabel>{Math.random() > 0.5 ? "Usernames" : "Passwords"}</TagLabel>
 					</Tag>
