@@ -1,20 +1,20 @@
+import { ChevronDownIcon, ChevronRightIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
 	Box,
-	Flex,
-	Text,
-	IconButton,
-	Stack,
 	Collapse,
+	Flex,
 	Icon,
+	IconButton,
 	Link as ChakraLink,
 	Popover,
-	PopoverTrigger,
 	PopoverContent,
-	useColorModeValue as lightDarkVal,
+	PopoverTrigger,
+	Stack,
+	Text,
 	useBreakpointValue,
+	useColorModeValue as lightDarkVal,
 	useDisclosure,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon, ChevronDownIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 
 export default function Navbar() {
@@ -47,7 +47,7 @@ export default function Navbar() {
 						fontWeight="600"
 						color={lightDarkVal("blue.700", "white")}
 					>
-						microcopy
+						microregex
 					</Text>
 
 					<Flex display={{ base: "none", md: "flex" }} ml={10}>
