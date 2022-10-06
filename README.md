@@ -1,7 +1,7 @@
 ## microregex
 
 <div style="text-align:center;">
-    <img src="./assets/mobile-logo.png" alt="microregex-logo" style="width: 100%; object-fit: contain;">
+    <img src="./assets/web-logo-2.png" alt="microregex-logo" style="width: 100%; object-fit: contain;">
 </div>
 
 ## Contributions
