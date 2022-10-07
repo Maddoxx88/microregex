@@ -6,7 +6,7 @@
 
 ## Contributions
 
-Microregex is open to contributions, but I recommend creating an issue or replying in a comment to let me know what you are working on first that way the code is not overwritten. 
+microregex is open to contributions, but I recommend creating an issue or replying in a comment to let me know what you are working on first that way the code is not overwritten. 
 
 Please read [CONTRIBUTING.md](https://github.com/Maddoxx88/microregex/blob/main/CONTRIBUTING.md) for details on this project.
 
