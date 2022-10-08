@@ -97,14 +97,24 @@ export default function HomePage() {
 	}, []);
 
 	return (
-		<Flex justify="center" w="100vw" py={10}>
-			<Box w="100%" maxW="container.lg" px={6}>
-				<InputGroup colorScheme="gray">
-					<InputLeftElement pointerEvents="none" children={<SearchIcon color="gray.500" />} />
-					<Input placeholder="Find your match" value={searchValue} onChange={handleSearchChange} />
+		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10}>
+			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
+				<InputGroup colorScheme="gray" w="100%" h={20}>
+					<InputLeftElement h="100%" pointerEvents="none" mt={1.2} children={<SearchIcon color="gray.500" fontSize="xl" />} pl={2} />
+					<Input
+						h="100%"
+						placeholder="find your match"
+						value={searchValue}
+						onChange={handleSearchChange}
+						borderRadius="xl"
+						_placeholder={{ letterSpacing: -0.25, lineHeight: 1, }}
+						lineHeight={1}
+						fontSize="xl"
+						pl="44px"
+					/>
 				</InputGroup>
 
-				<Flex mt={3} wrap="wrap">
+				<Flex mt={3} wrap="wrap" pb="44px" w="100%">
 					<Tag
 						marginInlineStart={0}
 						marginInlineEnd={2}
@@ -130,7 +140,9 @@ export default function HomePage() {
 						);
 					})}
 				</Flex>
+			</Flex>
 
+			<Box w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
 				<Grid templateColumns={isLg ? "repeat(3, 1fr)" : "1fr"} gridGap={6} pt={3}>
 					{Array.from({ length: 21 }).map((_, elKey) => {
 						return (
