@@ -1,22 +1,48 @@
 import { CopyIcon } from "@chakra-ui/icons";
-import { Box, Flex, IconButton, Tag, TagLabel, Text, useColorModeValue as lightDarkVal } from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
+import { Box, Flex, IconButton, Tag, TagLabel, Text, useColorModeValue as lightDarkVal, useToast } from "@chakra-ui/react";
 import { throttle } from "lodash";
 
-type Props = {};
+import { copyTextToClipboard } from "../utils/copytext";
+import { tagsObject } from "../utils/tags";
 
-export default function Card({}: Props) {
+type ContentType = {
+	[key: string]: string;
+};
+
+type Props = {
+	name: string;
+	description: string;
+	content: ContentType;
+	tags: string[];
+	selectedLang: string;
+	isLg: boolean;
+	isTab: boolean;
+};
+
+export default function Card({ name, content, description, tags, selectedLang, isLg, isTab }: Props) {
 	const toast = useToast();
 
-	const handleCardClick = throttle(() => {
-		toast({
-			title: "Copied to Clipboard!",
-			status: "success",
-			icon: <CopyIcon fontSize="xl" />,
-			duration: 750,
-			isClosable: true,
-		});
+	const handleCardClick = throttle(async () => {
+		let content = getContent();
+		if (content) {
+			const copied = await copyTextToClipboard(content);
+			
+			toast({
+				title: copied ? "Copied to Clipboard!" : "Error copying content. Try again!",
+				status: copied ? "success" : "error",
+				icon: <CopyIcon fontSize="xl" />,
+				duration: 750,
+				isClosable: true,
+			});
+		}
 	}, 750);
+
+	const getContent = () => {
+		if (selectedLang in content) {
+			return content[selectedLang];
+		}
+		return null;
+	};
 
 	const handlePreventClickPassthrough: React.MouseEventHandler<HTMLDivElement> = (e) => {
 		e.stopPropagation();
@@ -27,7 +53,7 @@ export default function Card({}: Props) {
 		<Box
 			minH={60}
 			h="full"
-			w="100%"
+			w="full"
 			borderRadius={6}
 			boxShadow="0 0 6px 2px rgba(0, 0, 0, 0.075)"
 			p={4}
@@ -39,7 +65,7 @@ export default function Card({}: Props) {
 			<Flex flexDir="column" position="relative" w="100%" h="100%">
 				<Flex align="center" fontWeight={600} fontSize="1.25rem" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
 					<Text onClick={handlePreventClickPassthrough} cursor="default">
-						Title
+						{name}
 					</Text>
 				</Flex>
 
@@ -54,26 +80,32 @@ export default function Card({}: Props) {
 
 				<Flex flex="1 0 auto" align="center" w="full" justify="center">
 					<Text
-						w="full"
-						fontSize="lg"
+						maxW={isLg ? isTab ? "330px": "320px": "auto"}
+						fontSize={isLg ? isTab ? "md" : "md" : "2.5vw"}
 						fontStyle="italic"
-						textAlign="center"
+						textAlign="center" overflowX='auto'
+						as="pre"
 						color={lightDarkVal("gray.500", "gray.400")}
 					>
-						Preview text
+						{getContent()}
 					</Text>
 				</Flex>
 
 				<Flex align="center" justify="flex-end">
-					<Tag
-						onClick={handlePreventClickPassthrough}
-						variant="solid"
-						marginInlineStart={0}
-						marginInlineEnd={2}
-						cursor="default"
-					>
-						<TagLabel>{Math.random() > 0.5 ? "Usernames" : "Passwords"}</TagLabel>
-					</Tag>
+					{tags.map((tag, tagIndex) => {
+						return (
+							<Tag
+								onClick={handlePreventClickPassthrough}
+								variant="solid"
+								marginInlineStart={0}
+								marginInlineEnd={2}
+								cursor="default"
+								key={tagIndex}
+							>
+								<TagLabel>{tagsObject[tag] || null}</TagLabel>
+							</Tag>
+						);
+					})}
 				</Flex>
 			</Flex>
 		</Box>

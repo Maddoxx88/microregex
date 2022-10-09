@@ -22,22 +22,28 @@ import React, { useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS } from "../graphql/queries";
 import { SiJavascript, SiPython } from "react-icons/si";
+import { tagsObject } from "../utils/tags";
 
 type Filter = {
 	search: string;
 	tags: string[];
 };
 
+type ContentType = {
+	[key: string]: string
+};
+
+type Pattern = {
+	name: string;
+	description: string;
+	content: ContentType
+	tags: string[];
+};
+
 type FilterType = string;
 type FilterKeyType = "search" | "tags";
 
-type FilterObject = { [key: FilterType]: string };
 type TagsObject = { [key: string]: true };
-
-const filterTypes: FilterObject = {
-	usernames: "Usernames",
-	passwords: "Passwords",
-};
 
 type LangTypes = { [key: string]: string };
 type LangIconTypes = { [key: string]: JSX.Element };
@@ -54,13 +60,16 @@ const langIcons: LangIconTypes = {
 
 const langList = Object.keys(langTypes);
 
-const filterList = Object.keys(filterTypes);
+const filterList = Object.keys(tagsObject);
 
 export default function HomePage() {
 	const nhost = useNhostClient();
+	
+	const [patternList, setPatternList] = useState<Pattern[]>([]);
 
 	const [lgSize] = useToken("sizes", ["container.md"]);
 	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
+	const [isTab] = useMediaQuery(`(min-width: ${lgSize}) and (max-width: 1154px)`);
 
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [tags, setTags] = useState<TagsObject>({});
@@ -121,14 +130,15 @@ export default function HomePage() {
 	}, [tags]);
 
 	useEffect(() => {
-		const url = nhost.graphql.getUrl();
-		console.log(`url: ${url}`);
+
 		async function anyNameFunction() {
-			const { data, error } = await nhost.graphql.request(PATTERNS);
+			const { data } = await nhost.graphql.request(PATTERNS);
 			console.log(data.patterns);
+			setPatternList(data.patterns)
 		}
+
 		anyNameFunction();
-	}, []);
+	}, [nhost.graphql]);
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10}>
@@ -178,6 +188,7 @@ export default function HomePage() {
 				<Flex mt={3} wrap="wrap" pb="44px" w="100%">
 					<Tag
 						marginInlineStart={0}
+						mb={2}
 						marginInlineEnd={2}
 						cursor="pointer"
 						variant={isAnyTagSelected ? "outline" : "solid"}
@@ -190,13 +201,14 @@ export default function HomePage() {
 						return (
 							<Tag
 								marginInlineStart={0}
+								mb={2}
 								marginInlineEnd={key === filterList.length - 1 ? 0 : 2}
 								key={filterType}
 								variant={tags[filterType] ? "solid" : "outline"}
 								cursor="pointer"
 								onClick={handleTypeChange(filterType)}
 							>
-								<TagLabel>{filterTypes[filterType]}</TagLabel>
+								<TagLabel>{tagsObject[filterType]}</TagLabel>
 							</Tag>
 						);
 					})}
@@ -204,11 +216,11 @@ export default function HomePage() {
 			</Flex>
 
 			<Box w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
-				<Grid templateColumns={isLg ? "repeat(3, 1fr)" : "1fr"} gridGap={6} pt={3}>
-					{Array.from({ length: 21 }).map((_, elKey) => {
+				<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
+					{patternList.map((pattern, elKey) => {
 						return (
 							<GridItem key={elKey}>
-								<Card />
+								<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} />
 							</GridItem>
 						);
 					})}
