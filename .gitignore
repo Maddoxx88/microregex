@@ -24,3 +24,5 @@ package-lock.json
 
 .env.*
 !.env.example
+
+test.json

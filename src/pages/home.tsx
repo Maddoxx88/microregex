@@ -7,9 +7,21 @@ import _, { debounce } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS } from "../graphql/queries";
+import { tagsObject } from "../utils/tags";
 
 type Filter = {
 	search: string;
+	tags: string[];
+};
+
+type ContentType = {
+	[key: string]: string
+};
+
+type Pattern = {
+	name: string;
+	description: string;
+	content: ContentType
 	tags: string[];
 };
 
@@ -19,15 +31,12 @@ type FilterKeyType = "search" | "tags";
 type FilterObject = { [key: FilterType]: string };
 type TagsObject = { [key: string]: true };
 
-const filterTypes: FilterObject = {
-	usernames: "Usernames",
-	passwords: "Passwords",
-};
-
-const filterList = Object.keys(filterTypes);
+const filterList = Object.keys(tagsObject);
 
 export default function HomePage() {
 	const nhost = useNhostClient();
+	
+	const [patternList, setPatternList] = useState<Pattern[]>([]);
 
 	const [lgSize] = useToken("sizes", ["container.md"]);
 	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
@@ -87,10 +96,11 @@ export default function HomePage() {
 
 	useEffect(() => {
 		const url = nhost.graphql.getUrl();
-		console.log(`url: ${url}`);
+		// console.log(`url: ${url}`);
 		async function anyNameFunction() {
 			const { data, error } = await nhost.graphql.request(PATTERNS);
 			console.log(data.patterns);
+			setPatternList(data.patterns)
 		}
 		anyNameFunction();
 		// https://wwgsiqjwetcrvgptnyta.graphql.ap-south-1.nhost.run/v1
@@ -135,7 +145,7 @@ export default function HomePage() {
 								cursor="pointer"
 								onClick={handleTypeChange(filterType)}
 							>
-								<TagLabel>{filterTypes[filterType]}</TagLabel>
+								<TagLabel>{tagsObject[filterType]}</TagLabel>
 							</Tag>
 						);
 					})}
@@ -144,10 +154,10 @@ export default function HomePage() {
 
 			<Box w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
 				<Grid templateColumns={isLg ? "repeat(3, 1fr)" : "1fr"} gridGap={6} pt={3}>
-					{Array.from({ length: 21 }).map((_, elKey) => {
+					{patternList.map((pattern, elKey) => {
 						return (
 							<GridItem key={elKey}>
-								<Card />
+								<Card {...pattern} />
 							</GridItem>
 						);
 					})}
@@ -156,3 +166,9 @@ export default function HomePage() {
 		</Flex>
 	);
 }
+
+// return (
+// 	<GridItem key={elKey}>
+// 		<Card />
+// 	</GridItem>
+// );
