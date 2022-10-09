@@ -1,12 +1,27 @@
 import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
-import { Box, Flex, Grid, GridItem, useMediaQuery, useToken } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Grid,
+	GridItem,
+	InputRightElement,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	useMediaQuery,
+	useToken,
+} from "@chakra-ui/react";
+import { chakra } from "@chakra-ui/react";
 import { Tag, TagLabel } from "@chakra-ui/tag";
 import { useNhostClient } from "@nhost/react";
 import _, { debounce } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS } from "../graphql/queries";
+import { SiJavascript, SiPython } from "react-icons/si";
 
 type Filter = {
 	search: string;
@@ -24,6 +39,21 @@ const filterTypes: FilterObject = {
 	passwords: "Passwords",
 };
 
+type LangTypes = { [key: string]: string };
+type LangIconTypes = { [key: string]: JSX.Element };
+
+const langTypes: LangTypes = {
+	js: "JavaScript",
+	py: "Python 3",
+};
+
+const langIcons: LangIconTypes = {
+	js: <SiJavascript />,
+	py: <SiPython />,
+};
+
+const langList = Object.keys(langTypes);
+
 const filterList = Object.keys(filterTypes);
 
 export default function HomePage() {
@@ -34,11 +64,16 @@ export default function HomePage() {
 
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [tags, setTags] = useState<TagsObject>({});
+	const [lang, setLang] = useState("js");
 
 	const filterRef = useRef<Filter>({
 		search: "",
 		tags: [],
 	});
+
+	const hangleChangeLang = (key: string) => () => {
+		setLang(key);
+	};
 
 	const handleSetFilter = React.useMemo(
 		() =>
@@ -93,25 +128,51 @@ export default function HomePage() {
 			console.log(data.patterns);
 		}
 		anyNameFunction();
-		// https://wwgsiqjwetcrvgptnyta.graphql.ap-south-1.nhost.run/v1
 	}, []);
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10}>
 			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
 				<InputGroup colorScheme="gray" w="100%" h={20}>
-					<InputLeftElement h="100%" pointerEvents="none" mt={1.2} children={<SearchIcon color="gray.500" fontSize="xl" />} pl={2} />
+					<InputLeftElement
+						h="100%"
+						pointerEvents="none"
+						mt={1.2}
+						children={<SearchIcon color="gray.500" fontSize="xl" />}
+						pl={2}
+					/>
 					<Input
 						h="100%"
 						placeholder="find your match"
 						value={searchValue}
 						onChange={handleSearchChange}
 						borderRadius="xl"
-						_placeholder={{ letterSpacing: -0.25, lineHeight: 1, }}
+						_placeholder={{ letterSpacing: -0.25, lineHeight: 1 }}
 						lineHeight={1}
 						fontSize="xl"
 						pl="44px"
+						pr={isLg ? "160px" : "50px"}
 					/>
+
+					<InputRightElement h="100%" pr={2} width={isLg ? "160px" : "50px"}>
+						<Menu>
+							<MenuButton as={Button} variant="outline" w={"100%"} px={isLg ? 2 : 0}>
+								<Flex as="span" align="center" justify="center">
+									{langIcons[lang] || null}
+
+									{isLg && <chakra.span pl={2}>{langTypes[lang]}</chakra.span>}
+								</Flex>
+							</MenuButton>
+							<MenuList>
+								{langList.map((langKey: string) => (
+									<MenuItem minH="40px" onClick={hangleChangeLang(langKey)}>
+										{langIcons[langKey]}
+										<chakra.span pl={2}>{langTypes[langKey]}</chakra.span>
+									</MenuItem>
+								))}
+							</MenuList>
+						</Menu>
+					</InputRightElement>
 				</InputGroup>
 
 				<Flex mt={3} wrap="wrap" pb="44px" w="100%">
