@@ -10,21 +10,22 @@ function fallbackCopyTextToClipboard(text: string) {
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
-
+    
+    let successful = false;
+    
     try {
-        var successful = document.execCommand("copy");
-
-        return successful;
+        successful = document.execCommand("copy");
     } catch (err) {
         return false;
     }
 
     document.body.removeChild(textArea);
+
+    return successful;
 }
+
 export async function copyTextToClipboard(text: string) {
-    if (!navigator.clipboard) {
-        return fallbackCopyTextToClipboard(text);
-    }
+    if (!navigator.clipboard) return fallbackCopyTextToClipboard(text);
 
     try {
         await navigator.clipboard.writeText(text);

@@ -1,12 +1,27 @@
 import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
-import { Box, Flex, Grid, GridItem, useMediaQuery, useToken } from "@chakra-ui/react";
+import {
+	Box,
+	Button,
+	Flex,
+	Grid,
+	GridItem,
+	InputRightElement,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
+	useMediaQuery,
+	useToken,
+} from "@chakra-ui/react";
+import { chakra } from "@chakra-ui/react";
 import { Tag, TagLabel } from "@chakra-ui/tag";
 import { useNhostClient } from "@nhost/react";
 import _, { debounce } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS } from "../graphql/queries";
+import { SiJavascript, SiPython } from "react-icons/si";
 import { tagsObject } from "../utils/tags";
 
 type Filter = {
@@ -28,8 +43,22 @@ type Pattern = {
 type FilterType = string;
 type FilterKeyType = "search" | "tags";
 
-type FilterObject = { [key: FilterType]: string };
 type TagsObject = { [key: string]: true };
+
+type LangTypes = { [key: string]: string };
+type LangIconTypes = { [key: string]: JSX.Element };
+
+const langTypes: LangTypes = {
+	js: "JavaScript",
+	py: "Python 3",
+};
+
+const langIcons: LangIconTypes = {
+	js: <SiJavascript />,
+	py: <SiPython />,
+};
+
+const langList = Object.keys(langTypes);
 
 const filterList = Object.keys(tagsObject);
 
@@ -40,14 +69,20 @@ export default function HomePage() {
 
 	const [lgSize] = useToken("sizes", ["container.md"]);
 	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
+	const [isTab] = useMediaQuery(`(min-width: ${lgSize}) and (max-width: 1154px)`);
 
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [tags, setTags] = useState<TagsObject>({});
+	const [lang, setLang] = useState("js");
 
 	const filterRef = useRef<Filter>({
 		search: "",
 		tags: [],
 	});
+
+	const hangleChangeLang = (key: string) => () => {
+		setLang(key);
+	};
 
 	const handleSetFilter = React.useMemo(
 		() =>
@@ -95,38 +130,65 @@ export default function HomePage() {
 	}, [tags]);
 
 	useEffect(() => {
-		const url = nhost.graphql.getUrl();
-		// console.log(`url: ${url}`);
+
 		async function anyNameFunction() {
-			const { data, error } = await nhost.graphql.request(PATTERNS);
+			const { data } = await nhost.graphql.request(PATTERNS);
 			console.log(data.patterns);
 			setPatternList(data.patterns)
 		}
+
 		anyNameFunction();
-		// https://wwgsiqjwetcrvgptnyta.graphql.ap-south-1.nhost.run/v1
-	}, []);
+	}, [nhost.graphql]);
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10}>
 			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
 				<InputGroup colorScheme="gray" w="100%" h={20}>
-					<InputLeftElement h="100%" pointerEvents="none" mt={1.2} children={<SearchIcon color="gray.500" fontSize="xl" />} pl={2} />
+					<InputLeftElement
+						h="100%"
+						pointerEvents="none"
+						mt={1.2}
+						children={<SearchIcon color="gray.500" fontSize="xl" />}
+						pl={2}
+					/>
 					<Input
 						h="100%"
 						placeholder="find your match"
 						value={searchValue}
 						onChange={handleSearchChange}
 						borderRadius="xl"
-						_placeholder={{ letterSpacing: -0.25, lineHeight: 1, }}
+						_placeholder={{ letterSpacing: -0.25, lineHeight: 1 }}
 						lineHeight={1}
 						fontSize="xl"
 						pl="44px"
+						pr={isLg ? "160px" : "50px"}
 					/>
+
+					<InputRightElement h="100%" pr={2} width={isLg ? "160px" : "50px"}>
+						<Menu>
+							<MenuButton as={Button} variant="outline" w={"100%"} px={isLg ? 2 : 0}>
+								<Flex as="span" align="center" justify="center">
+									{langIcons[lang] || null}
+
+									{isLg && <chakra.span pl={2}>{langTypes[lang]}</chakra.span>}
+								</Flex>
+							</MenuButton>
+							<MenuList>
+								{langList.map((langKey: string) => (
+									<MenuItem minH="40px" onClick={hangleChangeLang(langKey)}>
+										{langIcons[langKey]}
+										<chakra.span pl={2}>{langTypes[langKey]}</chakra.span>
+									</MenuItem>
+								))}
+							</MenuList>
+						</Menu>
+					</InputRightElement>
 				</InputGroup>
 
 				<Flex mt={3} wrap="wrap" pb="44px" w="100%">
 					<Tag
 						marginInlineStart={0}
+						mb={2}
 						marginInlineEnd={2}
 						cursor="pointer"
 						variant={isAnyTagSelected ? "outline" : "solid"}
@@ -139,6 +201,7 @@ export default function HomePage() {
 						return (
 							<Tag
 								marginInlineStart={0}
+								mb={2}
 								marginInlineEnd={key === filterList.length - 1 ? 0 : 2}
 								key={filterType}
 								variant={tags[filterType] ? "solid" : "outline"}
@@ -153,11 +216,11 @@ export default function HomePage() {
 			</Flex>
 
 			<Box w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
-				<Grid templateColumns={isLg ? "repeat(3, 1fr)" : "1fr"} gridGap={6} pt={3}>
+				<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
 					{patternList.map((pattern, elKey) => {
 						return (
 							<GridItem key={elKey}>
-								<Card {...pattern} />
+								<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} />
 							</GridItem>
 						);
 					})}
@@ -166,9 +229,3 @@ export default function HomePage() {
 		</Flex>
 	);
 }
-
-// return (
-// 	<GridItem key={elKey}>
-// 		<Card />
-// 	</GridItem>
-// );

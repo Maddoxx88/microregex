@@ -22,7 +22,7 @@ function App() {
 					<Box minH="100vh">
 						<Navbar />
 
-						<Box minH="calc(100vh - 60px)" h="calc(100vh - 60px)" overflowY="auto" overflowX="hidden">
+						<Box minH="calc(100vh - 60px)">
 							<Routes>
 								<Route path="/" element={<HomePage />} />
 							</Routes>

@@ -14,15 +14,19 @@ type Props = {
 	description: string;
 	content: ContentType;
 	tags: string[];
+	selectedLang: string;
+	isLg: boolean;
+	isTab: boolean;
 };
 
-export default function Card({ name, content, description, tags }: Props) {
+export default function Card({ name, content, description, tags, selectedLang, isLg, isTab }: Props) {
 	const toast = useToast();
 
 	const handleCardClick = throttle(async () => {
-		let content = getContent("js");
+		let content = getContent();
 		if (content) {
 			const copied = await copyTextToClipboard(content);
+			
 			toast({
 				title: copied ? "Copied to Clipboard!" : "Error copying content. Try again!",
 				status: copied ? "success" : "error",
@@ -33,9 +37,9 @@ export default function Card({ name, content, description, tags }: Props) {
 		}
 	}, 750);
 
-	const getContent = (lang: string = "js") => {
-		if (lang in content) {
-			return content[lang];
+	const getContent = () => {
+		if (selectedLang in content) {
+			return content[selectedLang];
 		}
 		return null;
 	};
@@ -49,7 +53,7 @@ export default function Card({ name, content, description, tags }: Props) {
 		<Box
 			minH={60}
 			h="full"
-			w="100%"
+			w="full"
 			borderRadius={6}
 			boxShadow="0 0 6px 2px rgba(0, 0, 0, 0.075)"
 			p={4}
@@ -76,10 +80,10 @@ export default function Card({ name, content, description, tags }: Props) {
 
 				<Flex flex="1 0 auto" align="center" w="full" justify="center">
 					<Text
-						w="full"
-						fontSize="lg"
+						maxW={isLg ? isTab ? "330px": "320px": "auto"}
+						fontSize={isLg ? isTab ? "md" : "md" : "2.5vw"}
 						fontStyle="italic"
-						textAlign="center"
+						textAlign="center" overflowX='auto'
 						as="pre"
 						color={lightDarkVal("gray.500", "gray.400")}
 					>
