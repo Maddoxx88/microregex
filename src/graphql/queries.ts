@@ -6,6 +6,7 @@ query {
         name
         description
         tags
+        content
         id
     }
 }
