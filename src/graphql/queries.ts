@@ -11,3 +11,15 @@ query {
     }
 }
 `
+
+export const PATTERNS_LIKE = gql`
+query getPatternsLike($name: String){
+    patterns(where: {name: {_ilike: $name}}) {
+      name
+      description
+      tags
+      id
+      content
+    }
+  }
+`

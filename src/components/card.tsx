@@ -48,6 +48,7 @@ export default function Card({ name, content, description, tags, selectedLang, i
 		e.stopPropagation();
 		e.preventDefault();
 	};
+	
 
 	return (
 		<Box

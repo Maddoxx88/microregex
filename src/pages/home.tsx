@@ -2,8 +2,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import {
 	Box,
-	Button,
-	Flex,
+	Button, chakra, Flex,
 	Grid,
 	GridItem,
 	InputRightElement,
@@ -12,16 +11,15 @@ import {
 	MenuItem,
 	MenuList,
 	useMediaQuery,
-	useToken,
+	useToken
 } from "@chakra-ui/react";
-import { chakra } from "@chakra-ui/react";
 import { Tag, TagLabel } from "@chakra-ui/tag";
 import { useNhostClient } from "@nhost/react";
 import _, { debounce } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import Card from "../components/card";
-import { PATTERNS } from "../graphql/queries";
 import { SiJavascript, SiPython } from "react-icons/si";
+import Card from "../components/card";
+import { PATTERNS, PATTERNS_LIKE } from "../graphql/queries";
 import { tagsObject } from "../utils/tags";
 
 type Filter = {
@@ -80,6 +78,13 @@ export default function HomePage() {
 		tags: [],
 	});
 
+	const searchPatterns = async (text: string) => {
+		console.log(text);
+			const { data } = await nhost.graphql.request(PATTERNS_LIKE, {name: `%${text}%`});
+			console.log(data);
+			setPatternList(data.patterns)
+	}
+
 	const hangleChangeLang = (key: string) => () => {
 		setLang(key);
 	};
@@ -91,8 +96,11 @@ export default function HomePage() {
 					filterRef.current = { ...filterRef.current, [key]: value };
 
 					console.log(filterRef.current);
+					
+					searchPatterns(filterRef.current.search);
+
 				}
-			}, 350),
+			}, 550),
 		[]
 	);
 
@@ -174,8 +182,8 @@ export default function HomePage() {
 								</Flex>
 							</MenuButton>
 							<MenuList>
-								{langList.map((langKey: string) => (
-									<MenuItem minH="40px" onClick={hangleChangeLang(langKey)}>
+								{langList.map((langKey: string, langIndex) => (
+									<MenuItem minH="40px" onClick={hangleChangeLang(langKey)} key={langIndex}>
 										{langIcons[langKey]}
 										<chakra.span pl={2}>{langTypes[langKey]}</chakra.span>
 									</MenuItem>
