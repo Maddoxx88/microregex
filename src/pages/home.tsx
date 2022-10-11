@@ -2,7 +2,9 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import {
 	Box,
-	Button, chakra, Flex,
+	Button,
+	chakra,
+	Flex,
 	Grid,
 	GridItem,
 	InputRightElement,
@@ -28,13 +30,13 @@ type Filter = {
 };
 
 type ContentType = {
-	[key: string]: string
+	[key: string]: string;
 };
 
 type Pattern = {
 	name: string;
 	description: string;
-	content: ContentType
+	content: ContentType;
 	tags: string[];
 };
 
@@ -62,7 +64,7 @@ const filterList = Object.keys(tagsObject);
 
 export default function HomePage() {
 	const nhost = useNhostClient();
-	
+
 	const [patternList, setPatternList] = useState<Pattern[]>([]);
 
 	const [lgSize] = useToken("sizes", ["container.md"]);
@@ -80,10 +82,10 @@ export default function HomePage() {
 
 	const searchPatterns = async (text: string) => {
 		console.log(text);
-			const { data } = await nhost.graphql.request(PATTERNS_LIKE, {name: `%${text}%`});
-			console.log(data);
-			setPatternList(data.patterns)
-	}
+		const { data } = await nhost.graphql.request(PATTERNS_LIKE, { name: `%${text}%` });
+		console.log(data);
+		setPatternList(data.patterns);
+	};
 
 	const hangleChangeLang = (key: string) => () => {
 		setLang(key);
@@ -96,9 +98,12 @@ export default function HomePage() {
 					filterRef.current = { ...filterRef.current, [key]: value };
 
 					console.log(filterRef.current);
-					
-					searchPatterns(filterRef.current.search);
-
+					if (filterRef.current.tags.length > 0) {
+						// query for name and tags
+					} else {
+						// query by name only
+						searchPatterns(filterRef.current.search);
+					}
 				}
 			}, 550),
 		[]
@@ -138,11 +143,10 @@ export default function HomePage() {
 	}, [tags]);
 
 	useEffect(() => {
-
 		async function anyNameFunction() {
 			const { data } = await nhost.graphql.request(PATTERNS);
 			console.log(data.patterns);
-			setPatternList(data.patterns)
+			setPatternList(data.patterns);
 		}
 
 		anyNameFunction();
