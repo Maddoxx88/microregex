@@ -18,7 +18,7 @@ import {
 import { Tag, TagLabel } from "@chakra-ui/tag";
 import { useNhostClient } from "@nhost/react";
 import _, { debounce } from "lodash";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SiJavascript } from "react-icons/si";
 import Card from "../components/card";
 import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
@@ -82,8 +82,7 @@ export default function HomePage() {
 		search: "",
 		tags: [],
 	});
-
-	const searchPatterns = async (text: string) => {
+	const searchPatterns = useCallback(async (text: string) => {
 		console.log(text);
 		setSearchLoading(true);
 		
@@ -96,9 +95,9 @@ export default function HomePage() {
 
 			setPatternList(data.patterns);
 		}
-	};
+	}, [nhost.graphql]);
 
-	const searchPatternsAndTags = async (text: string, tags: string[]) => {
+	const searchPatternsAndTags = useCallback(async (text: string, tags: string[]) => {
 		const tagsQuery: { tags: { _contains: string } }[] = [];
 
 		tags.forEach((tag) => {
@@ -124,7 +123,7 @@ export default function HomePage() {
 			setPatternList(data.patterns);
 		}
 
-	};
+	}, [nhost.graphql]);
 
 	const hangleChangeLang = (key: string) => () => {
 		setLang(key);
@@ -146,7 +145,7 @@ export default function HomePage() {
 					}
 				}
 			}, 550),
-		[]
+		[searchPatterns, searchPatternsAndTags]
 	);
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
