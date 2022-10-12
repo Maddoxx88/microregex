@@ -4,16 +4,13 @@ import {
 	Collapse,
 	Flex,
 	Icon,
-	IconButton,
-	Link as ChakraLink,
+	IconButton, Image, Link as ChakraLink,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 	Stack,
-	Text,
-	useBreakpointValue,
-	useColorModeValue as lightDarkVal,
-	useDisclosure,
+	Text, useColorModeValue as lightDarkVal,
+	useDisclosure
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
@@ -42,15 +39,17 @@ export default function Navbar() {
 					/>
 				</Flex>
 				<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-					<Text
+					{/* <Text
 						textAlign={useBreakpointValue({ base: "center", md: "left" })}
 						fontWeight="600"
 						color={lightDarkVal("blue.700", "white")}
 					>
 						microregex
-					</Text>
+					</Text> */}
 
-					<Flex display={{ base: "none", md: "flex" }} ml={10}>
+		<Image src='/web-hero-logo.svg' height={25} width={150} alt='microregex logo' />
+					<Text>&nbsp;|&nbsp;</Text>
+					<Flex display={{ base: "none", md: "flex" }} ml={1}>
 						<DesktopNav />
 					</Flex>
 				</Flex>
