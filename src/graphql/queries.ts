@@ -24,16 +24,13 @@ query getPatternsLike($name: String){
   }
 `
 
-export const PATTERNS_AND_TAGS = gql`
-query getPatternsAndTags($name: String) {
-  patterns(
-  where: {
-    _and: [{ name: { _ilike: "%%" } }, { tags: { _contains: ["auth", "finance"] } }]
-  }
-){
+export const PATTERNS_AND_TAGS_Q = gql`
+query getPatterns($where: patterns_bool_exp) {
+  patterns(where: $where) {
     name
     description
     tags
+    content
   }
 }
 `

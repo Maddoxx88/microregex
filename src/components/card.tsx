@@ -38,7 +38,7 @@ export default function Card({ name, content, description, tags, selectedLang, i
 	}, 750);
 
 	const getContent = () => {
-		if (selectedLang in content) {
+		if (content && selectedLang in content) {
 			return content[selectedLang];
 		}
 		return null;

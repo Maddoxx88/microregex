@@ -19,9 +19,9 @@ import { Tag, TagLabel } from "@chakra-ui/tag";
 import { useNhostClient } from "@nhost/react";
 import _, { debounce } from "lodash";
 import React, { useEffect, useRef, useState } from "react";
-import { SiJavascript, SiPython } from "react-icons/si";
+import { SiJavascript } from "react-icons/si";
 import Card from "../components/card";
-import { PATTERNS, PATTERNS_LIKE } from "../graphql/queries";
+import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
 import { tagsObject } from "../utils/tags";
 
 type Filter = {
@@ -50,12 +50,12 @@ type LangIconTypes = { [key: string]: JSX.Element };
 
 const langTypes: LangTypes = {
 	js: "JavaScript",
-	py: "Python 3",
+	// py: "Python 3",
 };
 
 const langIcons: LangIconTypes = {
 	js: <SiJavascript />,
-	py: <SiPython />,
+	// py: <SiPython />,
 };
 
 const langList = Object.keys(langTypes);
@@ -75,6 +75,9 @@ export default function HomePage() {
 	const [tags, setTags] = useState<TagsObject>({});
 	const [lang, setLang] = useState("js");
 
+	const [searchLoading, setSearchLoading] = useState(false);
+	const subscribed = useRef(true);
+
 	const filterRef = useRef<Filter>({
 		search: "",
 		tags: [],
@@ -82,9 +85,45 @@ export default function HomePage() {
 
 	const searchPatterns = async (text: string) => {
 		console.log(text);
+		setSearchLoading(true);
+		
 		const { data } = await nhost.graphql.request(PATTERNS_LIKE, { name: `%${text}%` });
+		
 		console.log(data);
-		setPatternList(data.patterns);
+		
+		if (subscribed.current) {
+			setSearchLoading(false);
+
+			setPatternList(data.patterns);
+		}
+	};
+
+	const searchPatternsAndTags = async (text: string, tags: string[]) => {
+		const tagsQuery: { tags: { _contains: string } }[] = [];
+
+		tags.forEach((tag) => {
+			tagsQuery.push({ tags: { _contains: tag } });
+		});
+
+		const { data } = await nhost.graphql.request(PATTERNS_AND_TAGS_Q, {
+			where: {
+				_and: [
+					{ name: { _ilike: `%${text}%` } },
+					{
+						_or: tagsQuery,
+					},
+				],
+			},
+		});
+		
+		console.log(data);
+		
+		if (subscribed.current) {
+			setSearchLoading(false);
+
+			setPatternList(data.patterns);
+		}
+
 	};
 
 	const hangleChangeLang = (key: string) => () => {
@@ -100,6 +139,7 @@ export default function HomePage() {
 					console.log(filterRef.current);
 					if (filterRef.current.tags.length > 0) {
 						// query for name and tags
+						searchPatternsAndTags(filterRef.current.search, filterRef.current.tags);
 					} else {
 						// query by name only
 						searchPatterns(filterRef.current.search);
@@ -110,6 +150,8 @@ export default function HomePage() {
 	);
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (searchLoading) return;
+
 		const value = e.target.value;
 		setSearchValue(value);
 
@@ -117,6 +159,8 @@ export default function HomePage() {
 	};
 
 	const handleTypeChange = (key: string) => () => {
+		if (searchLoading) return;
+		
 		setTags((s) => {
 			const result = { ...s };
 			if (key in result) delete result[key];
@@ -141,6 +185,14 @@ export default function HomePage() {
 
 		return false;
 	}, [tags]);
+
+	useEffect(() => {
+		subscribed.current = true;
+
+		return () => {
+			subscribed.current = false;
+		}
+	}, []);
 
 	useEffect(() => {
 		async function anyNameFunction() {
@@ -174,6 +226,7 @@ export default function HomePage() {
 						fontSize="xl"
 						pl="44px"
 						pr={isLg ? "160px" : "50px"}
+						disabled={searchLoading}
 					/>
 
 					<InputRightElement h="100%" pr={2} width={isLg ? "160px" : "50px"}>
@@ -203,7 +256,7 @@ export default function HomePage() {
 						mb={2}
 						marginInlineEnd={2}
 						cursor="pointer"
-						variant={isAnyTagSelected ? "outline" : "solid"}
+						variant={searchLoading ? "subtle" : isAnyTagSelected ? "outline" : "solid"}
 						onClick={handleTagsReset}
 					>
 						<TagLabel>All</TagLabel>
@@ -216,7 +269,7 @@ export default function HomePage() {
 								mb={2}
 								marginInlineEnd={key === filterList.length - 1 ? 0 : 2}
 								key={filterType}
-								variant={tags[filterType] ? "solid" : "outline"}
+								variant={searchLoading ? "subtle" : tags[filterType] ? "solid" : "outline"}
 								cursor="pointer"
 								onClick={handleTypeChange(filterType)}
 							>
@@ -228,7 +281,7 @@ export default function HomePage() {
 			</Flex>
 
 			<Box w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
-				<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
+				{searchLoading ? <>Loading</> : <Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
 					{patternList.map((pattern, elKey) => {
 						return (
 							<GridItem key={elKey}>
@@ -236,7 +289,7 @@ export default function HomePage() {
 							</GridItem>
 						);
 					})}
-				</Grid>
+				</Grid>}
 			</Box>
 		</Flex>
 	);
