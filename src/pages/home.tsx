@@ -12,6 +12,7 @@ import {
 	MenuButton,
 	MenuItem,
 	MenuList,
+	TagCloseButton,
 	useMediaQuery,
 	useToken
 } from "@chakra-ui/react";
@@ -212,7 +213,7 @@ export default function HomePage() {
 						pointerEvents="none"
 						mt={1.2}
 						children={<SearchIcon color="gray.500" fontSize="xl" />}
-						pl={2}
+						pl={4}
 					/>
 					<Input
 						h="100%"
@@ -220,10 +221,13 @@ export default function HomePage() {
 						value={searchValue}
 						onChange={handleSearchChange}
 						borderRadius="xl"
-						_placeholder={{ letterSpacing: -0.25, lineHeight: 1 }}
+						_placeholder={{ letterSpacing: -0.25, lineHeight: 1, color: 'gray.500' }}
 						lineHeight={1}
-						fontSize="xl"
-						pl="44px"
+						fontSize="2xl"
+						_focus={{ borderWidth: 1, borderColor: 'blue.100'}}
+						fontWeight={500}
+						pl={"48px"}
+						color={'gray.500'}
 						pr={isLg ? "160px" : "50px"}
 						disabled={searchLoading}
 					/>
@@ -256,6 +260,11 @@ export default function HomePage() {
 						marginInlineEnd={2}
 						cursor="pointer"
 						variant={searchLoading ? "subtle" : isAnyTagSelected ? "outline" : "solid"}
+						// color={'#EDF2F7'}
+						// bgColor={'#2D3748'}
+						colorScheme={'blackAlpha'}
+						px={5}
+						borderRadius={15}
 						onClick={handleTagsReset}
 					>
 						<TagLabel>All</TagLabel>
@@ -270,9 +279,13 @@ export default function HomePage() {
 								key={filterType}
 								variant={searchLoading ? "subtle" : tags[filterType] ? "solid" : "outline"}
 								cursor="pointer"
+								colorScheme={'blackAlpha'}
+								px={5}
+								borderRadius={15}
 								onClick={handleTypeChange(filterType)}
 							>
 								<TagLabel>{tagsObject[filterType]}</TagLabel>
+								{ tags[filterType] && <TagCloseButton />}
 							</Tag>
 						);
 					})}

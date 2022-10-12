@@ -64,8 +64,8 @@ export default function Card({ name, content, description, tags, selectedLang, i
 			cursor="pointer"
 		>
 			<Flex flexDir="column" position="relative" w="100%" h="100%">
-				<Flex align="center" fontWeight={600} fontSize="1.25rem" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
-					<Text onClick={handlePreventClickPassthrough} cursor="default">
+				<Flex align="center" fontWeight={400} fontSize="sm" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
+					<Text color={'#A0AEC0'} onClick={handlePreventClickPassthrough} cursor="default">
 						{name}
 					</Text>
 				</Flex>
@@ -82,11 +82,10 @@ export default function Card({ name, content, description, tags, selectedLang, i
 				<Flex flex="1 0 auto" align="center" w="full" justify="center">
 					<Text
 						maxW={isLg ? isTab ? "330px": "320px": "auto"}
-						fontSize={isLg ? isTab ? "md" : "md" : "2.5vw"}
-						fontStyle="italic"
+						fontSize={isLg ? isTab ? "lg" : "lg" : "2.5vw"}
 						textAlign="center" overflowX='auto'
-						as="pre"
-						color={lightDarkVal("gray.500", "gray.400")}
+						fontWeight={600}
+						color={lightDarkVal("black", "white")}
 					>
 						{getContent()}
 					</Text>
@@ -97,13 +96,14 @@ export default function Card({ name, content, description, tags, selectedLang, i
 						return (
 							<Tag
 								onClick={handlePreventClickPassthrough}
-								variant="solid"
 								marginInlineStart={0}
 								marginInlineEnd={2}
 								cursor="default"
 								key={tagIndex}
+								size='sm'
+								colorScheme='gray'
 							>
-								<TagLabel>{tagsObject[tag] || null}</TagLabel>
+								<TagLabel color={'#718096'}>{tagsObject[tag] || null}</TagLabel>
 							</Tag>
 						);
 					})}
