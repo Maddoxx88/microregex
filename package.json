@@ -17,6 +17,7 @@
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
+    "chakra-react-select": "^4.2.6",
     "framer-motion": "^7.5.1",
     "graphql": "^16.6.0",
     "lodash": "^4.17.21",
