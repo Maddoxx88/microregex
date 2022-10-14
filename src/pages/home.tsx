@@ -2,38 +2,32 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import {
 	Box,
-	Button,
-	Drawer,
+	Button, chakra, Drawer,
 	DrawerBody,
 	DrawerContent,
 	DrawerHeader,
 	DrawerOverlay,
-	Flex,
-	Grid,
+	Flex, FormControl,
+	FormHelperText,
+	FormLabel, Grid,
 	GridItem,
 	IconButton,
 	InputRightElement,
-	Text,
-	useDisclosure,
+	Text, useColorModeValue as lightDarkValue, useDisclosure,
 	useMediaQuery,
-	useToken,
-	useColorModeValue as lightDarkValue,
-	chakra,
-	FormControl,
-	FormHelperText,
-	FormLabel,
+	useToken
 } from "@chakra-ui/react";
 
-import { MultiValue, Select, SingleValue } from "chakra-react-select";
 import { useNhostClient } from "@nhost/react";
+import { MultiValue, Select, SingleValue } from "chakra-react-select";
 import _, { debounce } from "lodash";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
 import { tagsObject } from "../utils/tags";
 
-import { SiJavascript, SiPython } from "react-icons/si";
 import { IoIosFunnel } from "react-icons/io";
+import { SiJavascript, SiPython } from "react-icons/si";
 
 type Filter = {
 	search: string;
@@ -49,6 +43,7 @@ type Pattern = {
 	description: string;
 	content: ContentType;
 	tags: string[];
+	preview: string;
 };
 
 type OptionType = {

@@ -7,7 +7,7 @@ query {
         description
         tags
         content
-        id
+        preview
     }
 }
 `
@@ -18,7 +18,7 @@ query getPatternsLike($name: String){
       name
       description
       tags
-      id
+      preview
       content
     }
   }
@@ -31,6 +31,7 @@ query getPatterns($where: patterns_bool_exp) {
     description
     tags
     content
+    preview
   }
 }
 `
