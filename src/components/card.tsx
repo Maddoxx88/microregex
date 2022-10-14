@@ -14,12 +14,13 @@ type Props = {
 	description: string;
 	content: ContentType;
 	tags: string[];
+	preview: string;
 	selectedLang: string;
 	isLg: boolean;
 	isTab: boolean;
 };
 
-export default function Card({ name, content, description, tags, selectedLang, isLg, isTab }: Props) {
+export default function Card({ name, content, description, preview, tags, selectedLang, isLg, isTab }: Props) {
 	const toast = useToast();
 
 	const handleCardClick = throttle(async () => {
@@ -87,7 +88,7 @@ export default function Card({ name, content, description, tags, selectedLang, i
 						fontWeight={600}
 						color={lightDarkVal("black", "white")}
 					>
-						{getContent()}
+						{preview}
 					</Text>
 				</Flex>
 
