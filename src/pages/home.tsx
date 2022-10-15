@@ -13,6 +13,7 @@ import {
 	GridItem,
 	IconButton,
 	InputRightElement,
+	Spinner,
 	Text, useColorModeValue as lightDarkValue, useDisclosure,
 	useMediaQuery,
 	useToken
@@ -131,6 +132,8 @@ export default function HomePage() {
 
 	const searchPatternsAndTags = useCallback(
 		async (text: string, tags: string[]) => {
+			setSearchLoading(true);
+
 			const tagsQuery: { tags: { _contains: string } }[] = [];
 
 			tags.forEach((tag) => {
@@ -253,14 +256,14 @@ export default function HomePage() {
 	}, [nhost.graphql]);
 
 	return (
-		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10} pr={4}>
-			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
+		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10} pr={{ base: 0, md: 4 }}>
+			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
 				<InputGroup colorScheme="gray" w="100%" h={20} mb="44px">
 					<InputLeftElement
 						h="100%"
 						pointerEvents="none"
 						mt={1.2}
-						children={<SearchIcon color="gray.500" fontSize="xl" />}
+						children={searchLoading ? <Spinner size="md" /> : <SearchIcon color="gray.500" fontSize="xl" />}
 						pl={4}
 					/>
 					<Input
@@ -314,13 +317,13 @@ export default function HomePage() {
 						<DrawerBody>
 							<FormControl>
 								<FormLabel>Tags</FormLabel>
-								<Select value={menuTags} isMulti options={tagsOptions} onChange={handleChangeTags} />
+								<Select isDisabled={searchLoading} value={menuTags} isMulti options={tagsOptions} onChange={handleChangeTags} />
 								<FormHelperText>Select tags to filter your search.</FormHelperText>
 							</FormControl>
 
 							<FormControl mt={5}>
 								<FormLabel>Language</FormLabel>
-								<Select value={menuLang} options={langOptions} onChange={hangleChangeLang} />
+								<Select isDisabled={searchLoading} value={menuLang} options={langOptions} onChange={hangleChangeLang} />
 								<FormHelperText>More languages support coming soon.</FormHelperText>
 							</FormControl>
 						</DrawerBody>
@@ -328,9 +331,11 @@ export default function HomePage() {
 				</Drawer>
 			</Flex>
 
-			<Box w="100%" maxW="container.xl" px={{ base: 10, md: 6 }}>
+			<Box w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
 				{searchLoading ? (
-					<>Loading</>
+					<Flex h="40vh" align="center" justify="center">
+						<Spinner height="10vh" width="10vh" thickness="2.5px" emptyColor="gray.100" speed=".5s" />
+					</Flex>
 				) : (
 					<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
 						{patternList.map((pattern, elKey) => {
