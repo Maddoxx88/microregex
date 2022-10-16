@@ -48,7 +48,6 @@ export default function Navbar() {
 					</Text> */}
 
 		<Image src='/web-hero-logo.svg' height={25} width={150} alt='microregex logo' />
-					<Text>&nbsp;|&nbsp;</Text>
 					<Flex display={{ base: "none", md: "flex" }} ml={1}>
 						<DesktopNav />
 					</Flex>
@@ -71,6 +70,7 @@ const DesktopNav = () => {
 
 	return (
 		<Stack direction={"row"} spacing={4}>
+			<Text>&nbsp;|&nbsp;</Text>
 			{NAV_ITEMS.map((navItem) => (
 				<Box key={navItem.label}>
 					<Popover trigger={"hover"} placement={"bottom-start"}>

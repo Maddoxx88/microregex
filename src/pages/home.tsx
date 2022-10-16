@@ -2,7 +2,7 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import {
 	Box,
-	Button, chakra, Drawer,
+	Button, Center, chakra, Drawer,
 	DrawerBody,
 	DrawerContent,
 	DrawerHeader,
@@ -332,21 +332,25 @@ export default function HomePage() {
 			</Flex>
 
 			<Box w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
-				{searchLoading ? (
+				{
+				searchLoading ? 
+				(
 					<Flex h="40vh" align="center" justify="center">
 						<Spinner height="10vh" width="10vh" thickness="2.5px" emptyColor="gray.100" speed=".5s" />
 					</Flex>
-				) : (
-					<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
-						{patternList.map((pattern, elKey) => {
-							return (
-								<GridItem key={elKey}>
-									<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} />
-								</GridItem>
-							);
-						})}
-					</Grid>
-				)}
+				) : 
+				(	
+					patternList.length > 0 ? 					<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
+					{patternList.map((pattern, elKey) => {
+						return (
+							<GridItem key={elKey}>
+								<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} />
+							</GridItem>
+						);
+					})}
+				</Grid> : <Center><Text fontSize={isLg ? "xl" : "lg"} fontWeight={500}>⚠️ Sorry, we couldn’t find your pattern in our records. Care to contribute?</Text></Center>
+				)
+				}
 			</Box>
 		</Flex>
 	);

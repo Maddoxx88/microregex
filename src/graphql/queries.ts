@@ -35,3 +35,15 @@ query getPatterns($where: patterns_bool_exp) {
   }
 }
 `
+
+export const PATTERNS_INFO = gql`
+query getPatternInfo($id: String){
+  patterns(where: {id: {_id: $eq}}) {
+    name
+    description
+    tags
+    preview
+    content
+  }
+}
+`

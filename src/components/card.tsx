@@ -1,6 +1,26 @@
-import { CopyIcon } from "@chakra-ui/icons";
-import { Box, Flex, IconButton, Tag, TagLabel, Text, useColorModeValue as lightDarkVal, useToast } from "@chakra-ui/react";
+import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import {
+	Box,
+	Button,
+	Flex,
+	IconButton,
+	Link,
+	Modal,
+	ModalBody,
+	ModalCloseButton,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	ModalOverlay,
+	Tag,
+	TagLabel,
+	Text,
+	useColorModeValue as lightDarkVal,
+	useDisclosure,
+	useToast
+} from "@chakra-ui/react";
 import { throttle } from "lodash";
+import { useState } from "react";
 
 import { copyTextToClipboard } from "../utils/copytext";
 import { tagsObject } from "../utils/tags";
@@ -20,14 +40,29 @@ type Props = {
 	isTab: boolean;
 };
 
+const OverlayTwo = () => (
+    <ModalOverlay
+      bg='none'
+      backdropFilter='auto'
+      backdropBlur='2.8px'
+    />
+  )
+
 export default function Card({ name, content, description, preview, tags, selectedLang, isLg, isTab }: Props) {
 	const toast = useToast();
+	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [overlay, setOverlay] = useState<JSX.Element>();
 
 	const handleCardClick = throttle(async () => {
+		setOverlay(<OverlayTwo />)
+		onOpen()
+	}, 750);
+ 
+	const handleCopyBtnClick = throttle(async () => {
 		let content = getContent();
 		if (content) {
 			const copied = await copyTextToClipboard(content);
-			
+
 			toast({
 				title: copied ? "Copied to Clipboard!" : "Error copying content. Try again!",
 				status: copied ? "success" : "error",
@@ -49,11 +84,10 @@ export default function Card({ name, content, description, preview, tags, select
 		e.stopPropagation();
 		e.preventDefault();
 	};
-	
 
 	return (
 		<Box
-			minH={60}
+			minH={48}
 			h="full"
 			w="full"
 			borderRadius={6}
@@ -64,9 +98,31 @@ export default function Card({ name, content, description, preview, tags, select
 			onClick={handleCardClick}
 			cursor="pointer"
 		>
+			<Modal isOpen={isOpen} onClose={onClose} motionPreset='slideInBottom' size={isLg ? (isTab ? "xl" : "full") : "xs"}>
+			{overlay}
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader>Modal Title</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+					<Link href='https://replit.com/@Maddoxx88/react-tic-tac-toehttps://chakra-ui.com' isExternal>
+  Try this <ExternalLinkIcon mx='2px' />
+</Link>
+					</ModalBody>
+
+					<ModalFooter>
+						<Button variant="ghost" mr={3} onClick={onClose}>
+							Close
+						</Button>
+						<Button colorScheme="blue">Secondary Action</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
 			<Flex flexDir="column" position="relative" w="100%" h="100%">
 				<Flex align="center" fontWeight={400} fontSize="sm" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
-					<Text color={'#A0AEC0'} onClick={handlePreventClickPassthrough} cursor="default">
+					<Text 						color={lightDarkVal("black", "white")} onClick={handlePreventClickPassthrough} cursor="default"
+					fontWeight={600}	
+					>
 						{name}
 					</Text>
 				</Flex>
@@ -78,15 +134,18 @@ export default function Card({ name, content, description, preview, tags, select
 					position="absolute"
 					top="0"
 					right="0"
+					onClick={handleCopyBtnClick}
 				/>
 
 				<Flex flex="1 0 auto" align="center" w="full" justify="center">
 					<Text
-						maxW={isLg ? isTab ? "330px": "320px": "auto"}
-						fontSize={isLg ? isTab ? "lg" : "lg" : "2.5vw"}
-						textAlign="center" overflowX='auto'
+						maxW={isLg ? (isTab ? "330px" : "320px") : "auto"}
+						fontSize={isLg ? (isTab ? "xl" : "xl") : "lg"}
+						textAlign="center"
+						overflowX="auto"
 						fontWeight={600}
-						color={lightDarkVal("black", "white")}
+						color={"#A0AEC0"}
+						// color={lightDarkVal("black", "white")}
 					>
 						{preview}
 					</Text>
@@ -101,10 +160,10 @@ export default function Card({ name, content, description, preview, tags, select
 								marginInlineEnd={2}
 								cursor="default"
 								key={tagIndex}
-								size='sm'
-								colorScheme='gray'
+								size="sm"
+								colorScheme="gray"
 							>
-								<TagLabel color={'#718096'}>{tagsObject[tag] || null}</TagLabel>
+								<TagLabel color={"#718096"}>{tagsObject[tag] || null}</TagLabel>
 							</Tag>
 						);
 					})}
