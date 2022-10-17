@@ -21,7 +21,7 @@ import {
 
 import { useNhostClient } from "@nhost/react";
 import { MultiValue, Select, SingleValue } from "chakra-react-select";
-import _, { debounce } from "lodash";
+import _, { debounce, throttle } from "lodash";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
@@ -29,6 +29,7 @@ import { tagsObject } from "../utils/tags";
 
 import { IoIosFunnel } from "react-icons/io";
 import { SiJavascript, SiPython } from "react-icons/si";
+import InfoModal from "../components/modal";
 
 type Filter = {
 	search: string;
@@ -102,9 +103,13 @@ export default function HomePage() {
 
 	const [searchLoading, setSearchLoading] = useState(false);
 	const { isOpen, onClose, onOpen } = useDisclosure();
+	const { isOpen: isModalOpen, onClose: onModalClose, onOpen: onModalOpen } = useDisclosure();
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [menuTags, setMenuTags] = useState<OptionType[]>([]);
 	const [menuLang, setMenuLang] = useState<OptionType>(langOptions[0]);
+
+	const [overlay, setOverlay] = useState<JSX.Element>();
+	const [selectedCard, setselectedCard] = useState({});
 
 	const [lang, setLang] = useState("js");
 
@@ -114,6 +119,16 @@ export default function HomePage() {
 		search: "",
 		tags: [],
 	});
+
+	const handleCardClick = throttle(async (selectedIndex) => {
+		console.log(selectedIndex);
+		if (selectedIndex > -1) {			
+			setselectedCard(patternList[selectedIndex]);
+			console.log(patternList[selectedIndex]);
+			console.log(selectedCard);
+			onModalOpen();
+		}
+	}, 750);
 
 	const searchPatterns = useCallback(
 		async (text: string) => {
@@ -257,6 +272,7 @@ export default function HomePage() {
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10} pr={{ base: 0, md: 4 }}>
+						{selectedCard && <InfoModal selectedLang={lang} isLg={isLg} isTab={isTab} isOpen={isModalOpen} onClose={onModalClose} />}
 			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
 				<InputGroup colorScheme="gray" w="100%" h={20} mb="44px">
 					<InputLeftElement
@@ -344,7 +360,8 @@ export default function HomePage() {
 					{patternList.map((pattern, elKey) => {
 						return (
 							<GridItem key={elKey}>
-								<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} />
+								<Text>{elKey}</Text>
+								<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} idx={elKey} handleCardClick={handleCardClick} />
 							</GridItem>
 						);
 					})}

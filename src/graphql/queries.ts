@@ -38,7 +38,7 @@ query getPatterns($where: patterns_bool_exp) {
 
 export const PATTERNS_INFO = gql`
 query getPatternInfo($id: String){
-  patterns(where: {id: {_id: $eq}}) {
+  patterns(where: {id: {_eq: $id}}) {
     name
     description
     tags

@@ -1,26 +1,15 @@
-import { CopyIcon, ExternalLinkIcon } from "@chakra-ui/icons";
+import { CopyIcon } from "@chakra-ui/icons";
 import {
 	Box,
-	Button,
 	Flex,
 	IconButton,
-	Link,
-	Modal,
-	ModalBody,
-	ModalCloseButton,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
 	ModalOverlay,
 	Tag,
 	TagLabel,
 	Text,
-	useColorModeValue as lightDarkVal,
-	useDisclosure,
-	useToast
+	useColorModeValue as lightDarkVal, useToast
 } from "@chakra-ui/react";
 import { throttle } from "lodash";
-import { useState } from "react";
 
 import { copyTextToClipboard } from "../utils/copytext";
 import { tagsObject } from "../utils/tags";
@@ -38,26 +27,15 @@ type Props = {
 	selectedLang: string;
 	isLg: boolean;
 	isTab: boolean;
+	idx: number;
+	handleCardClick: (currentCardIndex: number) => void;
 };
 
-const OverlayTwo = () => (
-    <ModalOverlay
-      bg='none'
-      backdropFilter='auto'
-      backdropBlur='2.8px'
-    />
-  )
+const OverlayTwo = () => <ModalOverlay bg="none" backdropFilter="auto" backdropBlur="2.8px" />;
 
-export default function Card({ name, content, description, preview, tags, selectedLang, isLg, isTab }: Props) {
+export default function Card({ name, content, description, preview, tags, selectedLang, isLg, isTab, handleCardClick, idx }: Props) {
 	const toast = useToast();
-	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [overlay, setOverlay] = useState<JSX.Element>();
 
-	const handleCardClick = throttle(async () => {
-		setOverlay(<OverlayTwo />)
-		onOpen()
-	}, 750);
- 
 	const handleCopyBtnClick = throttle(async () => {
 		let content = getContent();
 		if (content) {
@@ -95,33 +73,17 @@ export default function Card({ name, content, description, preview, tags, select
 			p={4}
 			transition="box-shadow ease-in 175ms"
 			_hover={{ boxShadow: "0 0 6px 2px rgba(0, 0, 0, 0.25)" }}
-			onClick={handleCardClick}
+			onClick={()=>handleCardClick(idx)}
 			cursor="pointer"
 		>
-			<Modal isOpen={isOpen} onClose={onClose} motionPreset='slideInBottom' size={isLg ? (isTab ? "xl" : "full") : "xs"}>
-			{overlay}
-				<ModalOverlay />
-				<ModalContent>
-					<ModalHeader>Modal Title</ModalHeader>
-					<ModalCloseButton />
-					<ModalBody>
-					<Link href='https://replit.com/@Maddoxx88/react-tic-tac-toehttps://chakra-ui.com' isExternal>
-  Try this <ExternalLinkIcon mx='2px' />
-</Link>
-					</ModalBody>
 
-					<ModalFooter>
-						<Button variant="ghost" mr={3} onClick={onClose}>
-							Close
-						</Button>
-						<Button colorScheme="blue">Secondary Action</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
 			<Flex flexDir="column" position="relative" w="100%" h="100%">
 				<Flex align="center" fontWeight={400} fontSize="sm" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
-					<Text 						color={lightDarkVal("black", "white")} onClick={handlePreventClickPassthrough} cursor="default"
-					fontWeight={600}	
+					<Text
+						color={lightDarkVal("black", "white")}
+						onClick={handlePreventClickPassthrough}
+						cursor="default"
+						fontWeight={600}
 					>
 						{name}
 					</Text>

@@ -25,6 +25,7 @@ function App() {
 						<Box minH="calc(100vh - 60px)" overflowX="hidden">
 							<Routes>
 								<Route path="/" element={<HomePage />} />
+								{/* <Route path="*" element={<NotFound/>}/> */}
 							</Routes>
 						</Box>
 					</Box>
