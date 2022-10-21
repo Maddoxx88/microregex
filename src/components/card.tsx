@@ -1,7 +1,18 @@
 import { CopyIcon } from "@chakra-ui/icons";
-import { Box, Flex, IconButton, Tag, TagLabel, Text, useColorModeValue as lightDarkVal, useToast } from "@chakra-ui/react";
+import {
+	Box,
+	Flex,
+	IconButton, Tag,
+	TagLabel,
+	Text,
+	useColorModeValue as lightDarkVal,
+	useToast,
+	useToken
+} from "@chakra-ui/react";
 import { throttle } from "lodash";
-
+import { useMemo } from "react";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { a11yLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { copyTextToClipboard } from "../utils/copytext";
 import { tagsObject } from "../utils/tags";
 
@@ -18,16 +29,20 @@ type Props = {
 	selectedLang: string;
 	isLg: boolean;
 	isTab: boolean;
+	idx: number;
+	handleCardClick: (currentCardIndex: number) => void;
 };
 
-export default function Card({ name, content, description, preview, tags, selectedLang, isLg, isTab }: Props) {
-	const toast = useToast();
 
-	const handleCardClick = throttle(async () => {
+export default function Card({ name, content, tags, selectedLang, isLg, isTab, handleCardClick, idx }: Props) {
+	const toast = useToast();
+	const [blue500] = useToken("colors", ["blue.500"])
+
+	const handleCopyBtnClick = throttle(async () => {
 		let content = getContent();
 		if (content) {
 			const copied = await copyTextToClipboard(content);
-			
+
 			toast({
 				title: copied ? "Copied to Clipboard!" : "Error copying content. Try again!",
 				status: copied ? "success" : "error",
@@ -49,24 +64,41 @@ export default function Card({ name, content, description, preview, tags, select
 		e.stopPropagation();
 		e.preventDefault();
 	};
-	
+
+	const [containerXL] = useToken('sizes', ['container.xl'])
+
+	const selectedLanguage: string = useMemo(() => {
+		const syntaxLang: { [key: string]: string } = {
+			'js': 'javascript',
+			'py': 'python',
+		};
+		
+		return syntaxLang[selectedLang] || 'javascript';
+	}, [selectedLang]);
 
 	return (
 		<Box
-			minH={60}
+			minH={48}
 			h="full"
 			w="full"
 			borderRadius={6}
-			boxShadow="0 0 6px 2px rgba(0, 0, 0, 0.075)"
+			boxShadow={`0 0 6px 2px ${blue500}33`}
 			p={4}
 			transition="box-shadow ease-in 175ms"
-			_hover={{ boxShadow: "0 0 6px 2px rgba(0, 0, 0, 0.25)" }}
-			onClick={handleCardClick}
+			_hover={{ boxShadow: `0 0 6px 2px ${blue500}66` }}
+			onClick={()=>handleCardClick(idx)}
 			cursor="pointer"
 		>
-			<Flex flexDir="column" position="relative" w="100%" h="100%">
+
+			<Flex flexDir="column" position="relative" w="100%" h="full">
 				<Flex align="center" fontWeight={400} fontSize="sm" w="calc(100% - 40px)" h="40px" pr={2} lineHeight={1}>
-					<Text color={'#A0AEC0'} onClick={handlePreventClickPassthrough} cursor="default">
+					<Text
+						color={lightDarkVal("#1f1f1f", "white")}
+						onClick={handlePreventClickPassthrough}
+						cursor="default"
+						fontWeight={500}
+						fontSize={isLg ? (isTab ? "md" : "lg") : "md"}
+					>
 						{name}
 					</Text>
 				</Flex>
@@ -78,21 +110,25 @@ export default function Card({ name, content, description, preview, tags, select
 					position="absolute"
 					top="0"
 					right="0"
+					onClick={handleCopyBtnClick}
 				/>
 
 				<Flex flex="1 0 auto" align="center" w="full" justify="center">
 					<Text
-						maxW={isLg ? isTab ? "330px": "320px": "auto"}
-						fontSize={isLg ? isTab ? "lg" : "lg" : "2.5vw"}
-						textAlign="center" overflowX='auto'
-						fontWeight={600}
-						color={lightDarkVal("black", "white")}
+						maxW={isLg ? (isTab ? "330px" : `calc((${containerXL}) / 3 - 70px)`) : "xs"}
+						textAlign="center"
+						overflowX="auto"
+						as="div"
+						fontSize={isLg ? (isTab ? "md" : "md") : "xs"}
+						p={2}
 					>
-						{preview}
+						<SyntaxHighlighter wrapLines wrapLongLines language={selectedLanguage} style={a11yLight}>
+							{getContent() || ''}
+						</SyntaxHighlighter>
 					</Text>
 				</Flex>
 
-				<Flex align="center" justify="flex-end">
+				<Flex align="center" justify="flex-end" mt={4}>
 					{tags.map((tag, tagIndex) => {
 						return (
 							<Tag
@@ -101,10 +137,11 @@ export default function Card({ name, content, description, preview, tags, select
 								marginInlineEnd={2}
 								cursor="default"
 								key={tagIndex}
-								size='sm'
-								colorScheme='gray'
+								size="md"
+								variant='subtle'
+								colorScheme='twitter'
 							>
-								<TagLabel color={'#718096'}>{tagsObject[tag] || null}</TagLabel>
+								<TagLabel>{tagsObject[tag] || null}</TagLabel>
 							</Tag>
 						);
 					})}
