@@ -1,16 +1,21 @@
 import { ChevronDownIcon, ChevronRightIcon, CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
+	chakra,
 	Box,
 	Collapse,
 	Flex,
 	Icon,
-	IconButton, Image, Link as ChakraLink,
+	IconButton,
+	Image,
+	Link as ChakraLink,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
 	Stack,
-	Text, useColorModeValue as lightDarkVal,
-	useDisclosure
+	Text,
+	Kbd,
+	useColorModeValue as lightDarkVal,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
@@ -39,16 +44,9 @@ export default function Navbar() {
 					/>
 				</Flex>
 				<Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-					{/* <Text
-						textAlign={useBreakpointValue({ base: "center", md: "left" })}
-						fontWeight="600"
-						color={lightDarkVal("blue.700", "white")}
-					>
-						microregex
-					</Text> */}
+					<Image src="/web-hero-logo.svg" height={25} width={150} alt="microregex logo" />
 
-		<Image src='/web-hero-logo.svg' height={25} width={150} alt='microregex logo' />
-					<Flex display={{ base: "none", md: "flex" }} ml={1}>
+					<Flex display={{ base: "none", md: "flex" }} ml={1} flexGrow={1}>
 						<DesktopNav />
 					</Flex>
 				</Flex>
@@ -69,48 +67,74 @@ const DesktopNav = () => {
 	const popoverContentBgColor = lightDarkVal("white", "blue.800");
 
 	return (
-		<Stack direction={"row"} spacing={4}>
+		<Stack direction={"row"} spacing={4} w="full">
 			<Text>&nbsp;|&nbsp;</Text>
-			{NAV_ITEMS.map((navItem) => (
-				<Box key={navItem.label}>
-					<Popover trigger={"hover"} placement={"bottom-start"}>
-						<PopoverTrigger>
-							<Link to={navItem.href ?? "#"}>
-								<ChakraLink
-									as="span"
-									p={2}
-									fontSize={"sm"}
-									fontWeight={500}
-									color={linkColor}
-									_hover={{
-										textDecoration: "none",
-										color: linkHoverColor,
-									}}
-								>
-									{navItem.label}
-								</ChakraLink>
-							</Link>
-						</PopoverTrigger>
+			{NAV_ITEMS.map((navItem) => {
+				const link = navItem.isExternal ? (
+					<ChakraLink
+						isExternal
+						href={navItem.href ?? "#"}
+						p={2}
+						fontSize={"sm"}
+						fontWeight={500}
+						color={linkColor}
+						_hover={{
+							textDecoration: "none",
+							color: linkHoverColor,
+						}}
+					>
+						{navItem.label}
+					</ChakraLink>
+				) : (
+					<Link to={navItem.href ?? "#"}>
+						<ChakraLink
+							as="span"
+							p={2}
+							fontSize={"sm"}
+							fontWeight={500}
+							color={linkColor}
+							_hover={{
+								textDecoration: "none",
+								color: linkHoverColor,
+							}}
+						>
+							{navItem.label}
+						</ChakraLink>
+					</Link>
+				);
+				return (
+					<Box key={navItem.label}>
+						<Popover trigger={"hover"} placement={"bottom-start"}>
+							<PopoverTrigger>{link}</PopoverTrigger>
 
-						{navItem.children && (
-							<PopoverContent
-								border={0}
-								boxShadow={"xl"}
-								bg={popoverContentBgColor}
-								p={4}
-								rounded={"xl"}
-								minW={"sm"}
-							>
-								<Stack>
-									{navItem.children.map((child) => (
-										<DesktopSubNav key={child.label} {...child} />
-									))}
-								</Stack>
-							</PopoverContent>
-						)}
-					</Popover>
-				</Box>
-			))}
+							{navItem.children && (
+								<PopoverContent
+									border={0}
+									boxShadow={"xl"}
+									bg={popoverContentBgColor}
+									p={4}
+									rounded={"xl"}
+									minW={"sm"}
+								>
+									<Stack>
+										{navItem.children.map((child) => (
+											<DesktopSubNav key={child.label} {...child} />
+										))}
+									</Stack>
+								</PopoverContent>
+							)}
+						</Popover>
+					</Box>
+				);
+			})}
+			<Flex flexGrow={1} justify="flex-end" align="center">
+				<Text lineHeight={1} fontSize="0.925rem">
+					<chakra.span mr={1.5}>Perform a quick search using</chakra.span>
+					<chakra.span>
+						<Kbd>Ctrl</Kbd> + <Kbd>K</Kbd>
+					</chakra.span>
+				</Text>
+			</Flex>
 		</Stack>
 	);
 };
@@ -159,34 +183,64 @@ const MobileNav = () => {
 	);
 };
 
-const MobileNavItem = ({ label, children, href }: NavItem) => {
+const MobileNavItem = ({ label, children, href, isExternal }: NavItem) => {
 	const { isOpen, onToggle } = useDisclosure();
+
+	const link = isExternal ? (
+		<ChakraLink
+			href={href ?? "#"}
+			isExternal
+			as={"a"}
+			py={2}
+			display="flex"
+			justifyContent={"space-between"}
+			alignContent={"center"}
+			_hover={{
+				textDecoration: "none",
+			}}
+		>
+			<Text fontWeight={600} color={lightDarkVal("blue.600", "blue.200")}>
+				{label}
+			</Text>
+			{children && (
+				<Icon
+					as={ChevronDownIcon}
+					transition={"all .25s ease-in-out"}
+					transform={isOpen ? "rotate(180deg)" : ""}
+					w={6}
+					h={6}
+				/>
+			)}
+		</ChakraLink>
+	) : (
+		<Link to={href ?? "#"}>
+			<Flex
+				py={2}
+				justify={"space-between"}
+				align={"center"}
+				_hover={{
+					textDecoration: "none",
+				}}
+			>
+				<Text fontWeight={600} color={lightDarkVal("blue.600", "blue.200")}>
+					{label}
+				</Text>
+				{children && (
+					<Icon
+						as={ChevronDownIcon}
+						transition={"all .25s ease-in-out"}
+						transform={isOpen ? "rotate(180deg)" : ""}
+						w={6}
+						h={6}
+					/>
+				)}
+			</Flex>
+		</Link>
+	);
 
 	return (
 		<Stack spacing={4} onClick={children && onToggle}>
-			<Link to={href ?? "#"}>
-				<Flex
-					py={2}
-					justify={"space-between"}
-					align={"center"}
-					_hover={{
-						textDecoration: "none",
-					}}
-				>
-					<Text fontWeight={600} color={lightDarkVal("blue.600", "blue.200")}>
-						{label}
-					</Text>
-					{children && (
-						<Icon
-							as={ChevronDownIcon}
-							transition={"all .25s ease-in-out"}
-							transform={isOpen ? "rotate(180deg)" : ""}
-							w={6}
-							h={6}
-						/>
-					)}
-				</Flex>
-			</Link>
+			{link}
 
 			<Collapse in={isOpen} animateOpacity style={{ marginTop: "0!important" }}>
 				<Stack
@@ -201,6 +255,7 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
 						children.map((child) => {
 							if (child.type === "link" && child.href !== undefined) {
 								return (
+									// TODO: isExternal handling
 									<Link key={child.label} to={child.href}>
 										<ChakraLink py={2}>{child.label}</ChakraLink>
 									</Link>
@@ -221,6 +276,7 @@ interface NavItem {
 	children?: Array<NavItem>;
 	href?: string;
 	type?: "link" | "action";
+	isExternal?: boolean;
 }
 
 const NAV_ITEMS: Array<NavItem> = [
@@ -229,7 +285,8 @@ const NAV_ITEMS: Array<NavItem> = [
 		href: "/",
 	},
 	{
-		label: 'GitHub',
+		label: "GitHub",
 		href: "https://github.com/Maddoxx88/microregex",
+		isExternal: true,
 	},
 ];
