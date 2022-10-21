@@ -1,5 +1,3 @@
-import { SearchIcon } from "@chakra-ui/icons";
-import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import {
 	Box,
 	Button,
@@ -16,14 +14,12 @@ import {
 	FormLabel,
 	Grid,
 	GridItem,
-	IconButton,
-	InputRightElement,
 	Spinner,
 	Text,
 	useColorModeValue as lightDarkValue,
 	useDisclosure,
 	useMediaQuery,
-	useToken
+	useToken,
 } from "@chakra-ui/react";
 
 import { useNhostClient } from "@nhost/react";
@@ -35,9 +31,9 @@ import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries
 import { OptionType } from "../types";
 import { tagsObject } from "../utils/tags";
 
-import { IoIosFunnel } from "react-icons/io";
 import { SiJavascript, SiPython } from "react-icons/si";
 import InfoModal from "../components/modal";
+import Search from "../components/search";
 
 type Filter = {
 	search: string;
@@ -99,22 +95,19 @@ const tagsOptions = filterList.map((tag) => ({
 export default function HomePage() {
 	const nhost = useNhostClient();
 
-	const [patternList, setPatternList] = useState<Pattern[]>([]);
-
+	const { isOpen, onClose, onOpen } = useDisclosure();
+	const { isOpen: isModalOpen, onClose: onModalClose, onOpen: onModalOpen } = useDisclosure();
 	const [lgSize] = useToken("sizes", ["container.md"]);
 	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
 	const [isTab] = useMediaQuery(`(min-width: ${lgSize}) and (max-width: 1154px)`);
 
-	const [searchLoading, setSearchLoading] = useState(true);
-	const { isOpen, onClose, onOpen } = useDisclosure();
-	const { isOpen: isModalOpen, onClose: onModalClose, onOpen: onModalOpen } = useDisclosure();
-	const [searchValue, setSearchValue] = useState<string>("");
+	const [lang, setLang] = useState("js");
 	const [menuTags, setMenuTags] = useState<OptionType[]>([]);
 	const [menuLang, setMenuLang] = useState<OptionType>(langOptions[0]);
-
+	const [patternList, setPatternList] = useState<Pattern[]>([]);
+	const [searchLoading, setSearchLoading] = useState(true);
+	const [searchValue, setSearchValue] = useState<string>("");
 	const [selectedCard, setselectedCard] = useState<Pattern | null>(null);
-
-	const [lang, setLang] = useState("js");
 
 	const subscribed = useRef(true);
 	const filterBtnRef = useRef(null);
@@ -124,13 +117,10 @@ export default function HomePage() {
 	});
 
 	const handleCardClick = throttle(async (selectedIndex) => {
-		console.log(selectedIndex);
 		if (selectedIndex > -1) {
 			setselectedCard(patternList[selectedIndex]);
-			console.log(patternList[selectedIndex]);
 			onModalOpen();
 		}
-		console.log(selectedCard);
 	}, 750);
 
 	const searchPatterns = useCallback(
@@ -179,7 +169,6 @@ export default function HomePage() {
 	);
 
 	const hangleChangeLang: HandleChangeLang = (optionSelected) => {
-		console.log(optionSelected);
 		if (optionSelected) {
 			setMenuLang(optionSelected);
 		}
@@ -268,7 +257,7 @@ export default function HomePage() {
 	useEffect(() => {
 		async function anyNameFunction() {
 			const { data } = await nhost.graphql.request(PATTERNS);
-			
+
 			if (data?.patterns) {
 				setPatternList(data.patterns);
 				setSearchLoading(false);
@@ -294,35 +283,13 @@ export default function HomePage() {
 				/>
 			)}
 			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
-				<InputGroup colorScheme="gray" w="100%" h={20} mb="44px">
-					<InputLeftElement
-						h="100%"
-						pointerEvents="none"
-						mt={1.2}
-						children={searchLoading ? <Spinner size="md" /> : <SearchIcon color="gray.500" fontSize="xl" />}
-						pl={4}
-					/>
-					<Input
-						h="100%"
-						placeholder="find your match"
-						value={searchValue}
-						onChange={handleSearchChange}
-						borderRadius="xl"
-						_placeholder={{ letterSpacing: -0.25, lineHeight: 1, color: "gray.500" }}
-						lineHeight={1}
-						fontSize={isLg ? "xl" : "lg"}
-						_focus={{ borderWidth: 1, borderColor: "blue.100" }}
-						fontWeight={500}
-						pl={"48px"}
-						color={"gray.800"}
-						pr="68px"
-						disabled={searchLoading}
-					/>
-
-					<InputRightElement h="100%" width="68px">
-						<IconButton mx="auto" size="lg" aria-label="Filter" icon={<IoIosFunnel />} onClick={onOpen} />
-					</InputRightElement>
-				</InputGroup>
+				<Search
+					searchLoading={searchLoading}
+					searchValue={searchValue}
+					handleSearchChange={handleSearchChange}
+					isLg={isLg}
+					onOpen={onOpen}
+				/>
 
 				<Drawer
 					size={{ base: "xs", md: "md" }}
@@ -373,8 +340,8 @@ export default function HomePage() {
 									onChange={hangleChangeLang}
 									filterOption={createFilter({
 										stringify: (option) => {
-											return `${option.data.searchString || option.value}`
-										}
+											return `${option.data.searchString || option.value}`;
+										},
 									})}
 								/>
 								<FormHelperText>More languages support coming soon.</FormHelperText>
