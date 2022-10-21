@@ -17,7 +17,7 @@ import {
 	Text,
 	useToast
 } from "@chakra-ui/react";
-import { createFilter, MultiValue, Select, SingleValue } from "chakra-react-select";
+import { createFilter, Select, SingleValue } from "chakra-react-select";
 import { throttle } from "lodash";
 import { useCallback, useMemo, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -26,7 +26,6 @@ import { OptionType } from "../types";
 import { copyTextToClipboard } from "../utils/copytext";
 import { tagsObject } from "../utils/tags";
 
-type HandleChangeTypes = (newValue: MultiValue<OptionType>) => void;
 
 type HandleChangeLang = (newValue: SingleValue<OptionType>) => void;
 

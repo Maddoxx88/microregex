@@ -2,9 +2,7 @@ import { CopyIcon } from "@chakra-ui/icons";
 import {
 	Box,
 	Flex,
-	IconButton,
-	ModalOverlay,
-	Tag,
+	IconButton, Tag,
 	TagLabel,
 	Text,
 	useColorModeValue as lightDarkVal,
@@ -35,9 +33,8 @@ type Props = {
 	handleCardClick: (currentCardIndex: number) => void;
 };
 
-const OverlayTwo = () => <ModalOverlay bg="none" backdropFilter="auto" backdropBlur="2.8px" />;
 
-export default function Card({ name, content, description, preview, tags, selectedLang, isLg, isTab, handleCardClick, idx }: Props) {
+export default function Card({ name, content, tags, selectedLang, isLg, isTab, handleCardClick, idx }: Props) {
 	const toast = useToast();
 	const [blue500] = useToken("colors", ["blue.500"])
 
