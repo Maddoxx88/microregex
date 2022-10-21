@@ -2,29 +2,37 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/input";
 import {
 	Box,
-	Button, Center, chakra, Drawer,
+	Button,
+	Center,
+	chakra,
+	Drawer,
 	DrawerBody,
 	DrawerContent,
 	DrawerHeader,
 	DrawerOverlay,
-	Flex, FormControl,
+	Flex,
+	FormControl,
 	FormHelperText,
-	FormLabel, Grid,
+	FormLabel,
+	Grid,
 	GridItem,
 	IconButton,
 	InputRightElement,
 	Spinner,
-	Text, useColorModeValue as lightDarkValue, useDisclosure,
+	Text,
+	useColorModeValue as lightDarkValue,
+	useDisclosure,
 	useMediaQuery,
 	useToken
 } from "@chakra-ui/react";
 
 import { useNhostClient } from "@nhost/react";
-import { MultiValue, Select, SingleValue } from "chakra-react-select";
+import { createFilter, MultiValue, Select, SingleValue } from "chakra-react-select";
 import _, { debounce, throttle } from "lodash";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Card from "../components/card";
 import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
+import { OptionType } from "../types";
 import { tagsObject } from "../utils/tags";
 
 import { IoIosFunnel } from "react-icons/io";
@@ -46,11 +54,6 @@ type Pattern = {
 	content: ContentType;
 	tags: string[];
 	preview: string;
-};
-
-type OptionType = {
-	value: string;
-	label: JSX.Element;
 };
 
 type HandleChangeTypes = (newValue: MultiValue<OptionType>) => void;
@@ -83,6 +86,7 @@ const langOptions = langList.map((lang) => ({
 			<chakra.span pl={2}>{langTypes[lang]}</chakra.span>
 		</Flex>
 	),
+	searchString: langTypes[lang],
 }));
 
 const filterList = Object.keys(tagsObject);
@@ -101,15 +105,14 @@ export default function HomePage() {
 	const [isLg] = useMediaQuery(`(min-width: ${lgSize})`);
 	const [isTab] = useMediaQuery(`(min-width: ${lgSize}) and (max-width: 1154px)`);
 
-	const [searchLoading, setSearchLoading] = useState(false);
+	const [searchLoading, setSearchLoading] = useState(true);
 	const { isOpen, onClose, onOpen } = useDisclosure();
 	const { isOpen: isModalOpen, onClose: onModalClose, onOpen: onModalOpen } = useDisclosure();
 	const [searchValue, setSearchValue] = useState<string>("");
 	const [menuTags, setMenuTags] = useState<OptionType[]>([]);
 	const [menuLang, setMenuLang] = useState<OptionType>(langOptions[0]);
 
-	const [overlay, setOverlay] = useState<JSX.Element>();
-	const [selectedCard, setselectedCard] = useState({});
+	const [selectedCard, setselectedCard] = useState<Pattern | null>(null);
 
 	const [lang, setLang] = useState("js");
 
@@ -122,12 +125,12 @@ export default function HomePage() {
 
 	const handleCardClick = throttle(async (selectedIndex) => {
 		console.log(selectedIndex);
-		if (selectedIndex > -1) {			
+		if (selectedIndex > -1) {
 			setselectedCard(patternList[selectedIndex]);
 			console.log(patternList[selectedIndex]);
-			console.log(selectedCard);
 			onModalOpen();
 		}
+		console.log(selectedCard);
 	}, 750);
 
 	const searchPatterns = useCallback(
@@ -176,6 +179,7 @@ export default function HomePage() {
 	);
 
 	const hangleChangeLang: HandleChangeLang = (optionSelected) => {
+		console.log(optionSelected);
 		if (optionSelected) {
 			setMenuLang(optionSelected);
 		}
@@ -264,7 +268,11 @@ export default function HomePage() {
 	useEffect(() => {
 		async function anyNameFunction() {
 			const { data } = await nhost.graphql.request(PATTERNS);
-			setPatternList(data.patterns);
+			
+			if (data?.patterns) {
+				setPatternList(data.patterns);
+				setSearchLoading(false);
+			}
 		}
 
 		anyNameFunction();
@@ -272,7 +280,19 @@ export default function HomePage() {
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10} pr={{ base: 0, md: 4 }}>
-						{selectedCard && <InfoModal selectedLang={lang} isLg={isLg} isTab={isTab} isOpen={isModalOpen} onClose={onModalClose} />}
+			{selectedCard != null && (
+				<InfoModal
+					selectedLang={lang}
+					isLg={isLg}
+					isTab={isTab}
+					isOpen={isModalOpen}
+					onClose={onModalClose}
+					menuLang={menuLang}
+					langOptions={langOptions}
+					hangleChangeLang={hangleChangeLang}
+					{...selectedCard}
+				/>
+			)}
 			<Flex align="center" flexDir="column" w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
 				<InputGroup colorScheme="gray" w="100%" h={20} mb="44px">
 					<InputLeftElement
@@ -333,13 +353,30 @@ export default function HomePage() {
 						<DrawerBody>
 							<FormControl>
 								<FormLabel>Tags</FormLabel>
-								<Select isDisabled={searchLoading} value={menuTags} isMulti options={tagsOptions} onChange={handleChangeTags} />
+								<Select
+									isDisabled={searchLoading}
+									value={menuTags}
+									isMulti
+									options={tagsOptions}
+									onChange={handleChangeTags}
+								/>
 								<FormHelperText>Select tags to filter your search.</FormHelperText>
 							</FormControl>
 
 							<FormControl mt={5}>
 								<FormLabel>Language</FormLabel>
-								<Select isDisabled={searchLoading} value={menuLang} options={langOptions} onChange={hangleChangeLang} />
+								<Select
+									isDisabled={searchLoading}
+									value={menuLang}
+									options={langOptions}
+									isSearchable
+									onChange={hangleChangeLang}
+									filterOption={createFilter({
+										stringify: (option) => {
+											return `${option.data.searchString || option.value}`
+										}
+									})}
+								/>
 								<FormHelperText>More languages support coming soon.</FormHelperText>
 							</FormControl>
 						</DrawerBody>
@@ -348,26 +385,34 @@ export default function HomePage() {
 			</Flex>
 
 			<Box w="100%" maxW="container.xl" px={{ base: 4, md: 6 }}>
-				{
-				searchLoading ? 
-				(
+				{searchLoading ? (
 					<Flex h="40vh" align="center" justify="center">
 						<Spinner height="10vh" width="10vh" thickness="2.5px" emptyColor="gray.100" speed=".5s" />
 					</Flex>
-				) : 
-				(	
-					patternList.length > 0 ? 					<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
-					{patternList.map((pattern, elKey) => {
-						return (
-							<GridItem key={elKey}>
-								<Text>{elKey}</Text>
-								<Card {...pattern} selectedLang={lang} isLg={isLg} isTab={isTab} idx={elKey} handleCardClick={handleCardClick} />
-							</GridItem>
-						);
-					})}
-				</Grid> : <Center><Text fontSize={isLg ? "xl" : "lg"} fontWeight={500}>⚠️ Sorry, we couldn’t find your pattern in our records. Care to contribute?</Text></Center>
-				)
-				}
+				) : patternList.length > 0 ? (
+					<Grid templateColumns={isLg ? `repeat(${isTab ? "2" : "3"}, 1fr)` : "1fr"} gridGap={6} pt={3}>
+						{patternList.map((pattern, elKey) => {
+							return (
+								<GridItem key={elKey}>
+									<Card
+										{...pattern}
+										selectedLang={lang}
+										isLg={isLg}
+										isTab={isTab}
+										idx={elKey}
+										handleCardClick={handleCardClick}
+									/>
+								</GridItem>
+							);
+						})}
+					</Grid>
+				) : (
+					<Center>
+						<Text fontSize={isLg ? "xl" : "lg"} fontWeight={500}>
+							⚠️ Sorry, we couldn’t find your pattern in our records. Care to contribute?
+						</Text>
+					</Center>
+				)}
 			</Box>
 		</Flex>
 	);

@@ -8,6 +8,7 @@ import { NhostClient, NhostReactProvider } from "@nhost/react";
 import theme from "./theme";
 
 import "@fontsource/inter/variable.css";
+import NotFound from "./pages/notfound";
 
 const nhost = new NhostClient({
 	subdomain: process.env.REACT_APP_NHOST_SUBDOMAIN,
@@ -25,7 +26,7 @@ function App() {
 						<Box minH="calc(100vh - 60px)" overflowX="hidden">
 							<Routes>
 								<Route path="/" element={<HomePage />} />
-								{/* <Route path="*" element={<NotFound/>}/> */}
+								<Route path="*" element={<NotFound/>}/>
 							</Routes>
 						</Box>
 					</Box>
