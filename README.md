@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://rahuldkjain.github.io/gh-profile-readme-generator">
+  <a href="https://microregex.netlify.app/">
     <img alt="microregex" src="./assets/web-logo-2.png" width="450" />
   </a>
 </p>
