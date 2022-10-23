@@ -25,7 +25,7 @@
 </a>
 </p>
 
-<p align="center"><img src="./src/images/github-profile-readme-generator.gif" alt="github-profile-readme-generator gif" /></p>
+<p align="center"><img src="./assets/microregex-demo-03.gif" alt="github-profile-readme-generator gif" /></p>
 
 <p align="center">
     <a href="https://microregex.netlify.app/" target="blank">View Demo</a>
