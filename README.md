@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://microregex.netlify.app/">
-    <img alt="microregex" src="./assets/web-logo-2.png" width="450" />
+    <img alt="microregex" src="./assets/github-repo-cover.png" />
   </a>
 </p>
 <h1 align="center">
@@ -25,7 +25,7 @@
 </a>
 </p>
 
-<p align="center"><img src="./assets/microregex-demo-03.gif" alt="github-profile-readme-generator gif" /></p>
+<p align="center"><img src="./assets/microregex-demo-03.gif" alt="github-profile-readme-generator gif" width="450"/></p>
 
 <p align="center">
     <a href="https://microregex.netlify.app/" target="blank">View Demo</a>
