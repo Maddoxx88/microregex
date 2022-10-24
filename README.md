@@ -39,7 +39,7 @@
 <i>Loved the tool? Please consider <a href="https://github.com/Maddoxx88/microregex/issues">contributing </a>  ✍️ to help it improve!</i>
 </p>
 
-#### Tired of finding the right regular expressions from multiple websites?
+#### Tired of finding the right regular expression from multiple websites?
 
 This tool provides an easy way to find, copy and share a regex pattern along with many other features like filters and code specific regex.
 
