@@ -103,7 +103,7 @@ Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDU
 
 ## 💻 Built with
 
-- [React](https://reactjs.org/)
+- [React](https://reactjs.org/): for frontend
 - [Chakra UI](https://chakra-ui.com/): for styling
 - [Nhost](https://nhost.io/): for backend
 - [Hasura](https://hasura.io/): for postgresql + graphql api
