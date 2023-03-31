@@ -25,7 +25,7 @@
 </a>
 </p>
 
-<p align="center"><img src="./assets/microregex-demo-03.gif" alt="github-profile-readme-generator gif" width="450"/></p>
+<p align="center"><img src="./assets/microregex-demo-03.gif" alt="github-profile-readme-generator gif" width="500"/></p>
 
 <p align="center">
     <a href="https://microregex.netlify.app/" target="blank">View Demo</a>
@@ -36,10 +36,10 @@
 </p>
 
 <p align="center">
-<i>Loved the tool? Please consider <a href="https://github.com/Maddoxx88/microregex/issues">contributing </a>  ✍️ to help it improve!</i>
+<i>Loved the tool? Found some bugs? Hate the tool? Please consider <a href="https://github.com/Maddoxx88/microregex/issues">contributing </a>  ✍️ to help it improve!</i>
 </p>
 
-#### Tired of finding the right regular expressions from multiple websites?
+#### Tired of finding the right regular expression from multiple websites?
 
 This tool provides an easy way to find, copy and share a regex pattern along with many other features like filters and code specific regex.
 
@@ -103,7 +103,7 @@ Please read [`CONTRIBUTING`](CONTRIBUTING.md) for details on our [`CODE OF CONDU
 
 ## 💻 Built with
 
-- [React](https://reactjs.org/)
+- [React](https://reactjs.org/): for frontend
 - [Chakra UI](https://chakra-ui.com/): for styling
 - [Nhost](https://nhost.io/): for backend
 - [Hasura](https://hasura.io/): for postgresql + graphql api
