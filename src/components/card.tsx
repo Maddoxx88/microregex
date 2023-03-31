@@ -38,7 +38,9 @@ export default function Card({ name, content, tags, selectedLang, isLg, isTab, h
 	const toast = useToast();
 	const [blue500] = useToken("colors", ["blue.500"])
 
-	const handleCopyBtnClick = throttle(async () => {
+	const handleCopyBtnClick: React.MouseEventHandler<HTMLButtonElement> = throttle(async (e) => {
+		e.stopPropagation();
+		e.preventDefault();
 		let content = getContent();
 		if (content) {
 			const copied = await copyTextToClipboard(content);
