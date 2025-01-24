@@ -93,7 +93,7 @@ yarn
 yarn start
 ```
 
-🌟 You are all set!
+🌟 You're all set!
 
 ## 🍰 Contributing
 
