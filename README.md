@@ -36,7 +36,7 @@
 </p>
 
 <p align="center">
-<i>Loved the tool? Found some bugs? Hate the tool? Please consider <a href="https://github.com/Maddoxx88/microregex/issues">contributing </a>  ✍️ to help it improve!</i>
+<i>Loved the tool? Found some bugs? Dislike the tool? Please consider <a href="https://github.com/Maddoxx88/microregex/issues">contributing </a>  ✍️ to help it improve!</i>
 </p>
 
 #### Tired of finding the right regular expression from multiple websites?
