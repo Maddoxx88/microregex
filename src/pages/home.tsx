@@ -265,7 +265,7 @@ export default function HomePage() {
 		}
 	  
 		processPatterns()
-	  }, [regexData]);
+	  });
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10} pr={{ base: 0, md: 4 }}>
