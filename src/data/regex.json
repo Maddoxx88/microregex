@@ -1,0 +1,227 @@
+[
+          {
+             "name":"Email ID",
+             "description":"Regex for email validation",
+             "tags":[
+                "auth"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/[a-z0-9]+@[a-z]+\\.[a-z]{2,3}/gm);\nregex.test('abc@example.com');",
+                "py":"import re\nregex = r'[a-z0-9]+@[a-z]+\\.[a-z]{2,3}'\nre.fullmatch(regex, email)"
+             },
+             "preview":"preview@example.com"
+          },
+          {
+             "name":"Password",
+             "description":"Regex for password validation",
+             "tags":[
+                "auth"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)(?!.* ).{8,16}$/g);\nregex.test(\"usernmae\");",
+                "py":""
+             },
+             "preview":"passW_or1d"
+          },
+          {
+             "name":"Username",
+             "description":"Regex for username validation",
+             "tags":[
+                "auth"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]/gm);\nregex.test('abc@example.com');",
+                "py":"import re\nregex = r'\b/(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]/gm\b'\nre.fullmatch(regex, email)"
+             },
+             "preview":"username"
+          },
+          {
+             "name":"Credit Card",
+             "description":"Regex for Credit Cards",
+             "tags":[
+                "finance"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^.*/g); regex.test(\"abc@example.com\");",
+                "py":""
+             },
+             "preview":"4111111111111111"
+          },
+          {
+             "name":"Instagram URL",
+             "description":"Regex for instagram urls with different domain name support",
+             "tags":[
+                "social",
+                "url"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am|instagr.com)\/(\\w+)/igm);\nregex.test('https://www.instagram.com/jimisburger/');",
+                "py":"import re\nregex = r'\b(?:(?:http|https):\/\/)?(?:www.)?(?:instagram.com|instagr.am|instagr.com)\/(\\w+)/i\b'\nre.fullmatch(regex, 'https://www.instagram.com/jimisburger/')"
+             },
+             "preview":"https://www.instagram.com/jimisburger/"
+          },
+          {
+             "name":"Discord User Handle",
+             "description":"Regex for discord which allows to have a 4 digit tag along with a user name.",
+             "tags":[
+                "social"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^.{3,32}#[0-9]{4}$/gm);\nregex.test('DiscordUsername#2134');",
+                "py":"import re\nregex = r'/^.{3,32}#[0-9]{4}$/gm\b'\nre.fullmatch(regex, 'DiscordUsername#2134')"
+             },
+             "preview":"DiscordUsername#2134"
+          },
+          {
+             "name":"YouTube URL",
+             "description":"Regex for youtube urls with a slug",
+             "tags":[
+                "social",
+                "url"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^(https?\\:\/\/)?(www\\.youtube\\.com|youtu\\.be)\/.+$/gm);\nregex.test('https://www.youtube.com/watch?v=dQw4w9WgXcQ');",
+                "py":"import re\nregex = r'^(https?\\:\/\/)?(www\\.youtube\\.com|youtu\\.be)\/.+$'\nre.fullmatch(regex, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')"
+             },
+             "preview":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          },
+          {
+             "name":"ipv4 address",
+             "description":"Matches an ip address(version 4)",
+             "tags":[
+                "protocol"
+             ],
+             "content":{
+                "js":"const regex = new RegExp((\\b25[0-5]|\\b2[0-4][0-9]|\\b[01]?[0-9][0-9]?)(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3});\nregex.test('127.0.0.1');",
+                "py":"import re\nregex = r'^((\\b25[0-5]|\\b2[0-4][0-9]|\\b[01]?[0-9][0-9]?)(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}'\nre.fullmatch(regex, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')"
+             },
+             "preview":"127.0.0.1"
+          },
+          {
+             "name":"Phone Number",
+             "description":"Match a phone number with \"+\" and country code.",
+             "tags":[
+                "mobile"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$);\nregex.test('+919367788755');",
+                "py":"import re\nregex = r'^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$'\nre.fullmatch(regex, '+919367788755')"
+             },
+             "preview":"+919367788755 || +16308520397"
+          },
+          {
+             "name":"ipv6 address",
+             "description":"Matches a date in the format dd/mm/yyyy , dd-mm-yyyy or dd.mm.yyyy",
+             "tags":[
+                "protocol"
+             ],
+             "content":{
+                "js":"const regex = new RegExp((([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])));\nregex.test('FE80:0000:0000:0000:0202:B3FF:FE1E:8329');",
+                "py":"import re\nregex = r'(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))'\nre.fullmatch(regex, 'FE80:0000:0000:0000:0202:B3FF:FE1E:8329')"
+             },
+             "preview":"FE80:0000:0000:0000:0202:B3FF:FE1E:8329"
+          },
+          {
+             "name":"Credit Card Number",
+             "description":"Matches a date in the format dd/mm/yyyy , dd-mm-yyyy or dd.mm.yyyy",
+             "tags":[
+                "finance"
+             ],
+             "content":{
+                "js":"const regex = new RegExp((^4[0-9]{12}(?:[0-9]{3})?$)|(^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$)|(3[47][0-9]{13})|(^3(?:0[0-5]|[68][0-9])[0-9]{11}$)|(^6(?:011|5[0-9]{2})[0-9]{12}$)|(^(?:2131|1800|35\\d{3})\\d{11}$));\nregex.test('4569403961014710');",
+                "py":"import re\nregex = r'(^4[0-9]{12}(?:[0-9]{3})?$)|(^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}$)|(3[47][0-9]{13})|(^3(?:0[0-5]|[68][0-9])[0-9]{11}$)|(^6(?:011|5[0-9]{2})[0-9]{12}$)|(^(?:2131|1800|35\\d{3})\\d{11}$)'\nre.fullmatch(regex, '4569403961014710')"
+             },
+             "preview":"4569403961014710"
+          },
+          {
+             "name":"Aadhaar number",
+             "description":"A 12-digit easily verifiable random number issued by UIDAI to All Residents of India",
+             "tags":[
+                "identity",
+                "document"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^[2-9]{1}[2-9]{3}[ -]?[0-9]{4}[ -]?[0-9]{4}$/gm);\nregex.test('3675 9834 6012');",
+                "py":"import re\nregex = r'/^[2-9]{1}[2-9]{3}[ -]?[0-9]{4}[ -]?[0-9]{4}$/gm'\nre.fullmatch(regex, '3675 9834 6012')"
+             },
+             "preview":"3675 9834 6012"
+          },
+          {
+             "name":"PAN Card",
+             "description":"PAN is a ten-digit unique alphanumeric number issued by the Income Tax Department.",
+             "tags":[
+                "identity",
+                "document"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/[A-Z]{5}[0-9]{4}[A-Z]{1}/gm);\nregex.test('BNZAA2318J');",
+                "py":"import re\nregex = r'/[A-Z]{5}[0-9]{4}[A-Z]{1}/gm'\nre.fullmatch(regex, 'BNZAA2318J')"
+             },
+             "preview":"BNZAA2318J"
+          },
+          {
+             "name":"Driving license IN",
+             "description":"A driving licence is an official document that authorises its holder to operate various types of motor vehicles\"",
+             "tags":[
+                "identity",
+                "document"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/gm);\nregex.test('MH27 30120034761');",
+                "py":"import re\nregex = r'/^(([A-Z]{2}[0-9]{2})( )|([A-Z]{2}-[0-9]{2}))((19|20)[0-9][0-9])[0-9]{7}$/gm'\nre.fullmatch(regex, 'MH27 30120034761')"
+             },
+             "preview":"MH27 30120034761"
+          },
+          {
+             "name":"Passport number",
+             "description":"An Indian passport is a passport issued by the Ministry of External Affairs of the Republic of India to Indian citizens for the purpose of international travel.",
+             "tags":[
+                "identity",
+                "document"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(^[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]$);\nregex.test('A2096457');",
+                "py":"import re\nregex = r'^[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]$'\nre.fullmatch(regex, 'A2096457')"
+             },
+             "preview":"A2096457"
+          },
+          {
+             "name":"GST number",
+             "description":"Goods and Services Tax Identification Number (GSTIN) or GST Number is a unique identifier assigned to a business or person registered under the GST Act.",
+             "tags":[
+                "identity",
+                "document"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$);\nregex.test('06BZAHM6385P6Z2');",
+                "py":"import re\nregex = r'^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$'\nre.fullmatch(regex, '06BZAHM6385P6Z2')"
+             },
+             "preview":"06BZAHM6385P6Z2"
+          },
+          {
+             "name":"IFSC Code",
+             "description":"IFSC is short for Indian Financial System Code and represents the 11 digit character that you can usually see on your bank’s cheque leaves, or other bank sponsored material.This 11 character code helps identify the individual bank branches that participate in the various online money transfer options like NEFT and RTGS.",
+             "tags":[
+                "finance",
+                "auth"
+             ],
+             "content":{
+                "js":"const regex = new RegExp(/^[A-Z]{4}0[A-Z0-9]{6}$/gm);\nregex.test('ICIC0000756');",
+                "py":"import re\nregex = r'/^[A-Z]{4}0[A-Z0-9]{6}$/gm'\nre.fullmatch(regex, 'ICIC0000756')"
+             },
+             "preview":"ICIC0000756"
+          },
+          {
+             "name":"OTP",
+             "description":"A one-time password (OTP), also known as a one-time PIN, one-time authorization code (OTAC) or dynamic password, is a password that is valid for only one login session or transaction, on a computer system or other digital device.",
+             "tags":[
+                "communication",
+                "auth"
+             ],
+             "content":{
+                "js":"const regex = new RegExp([0-9]{4,8});\nregex.test('869256');",
+                "py":"import re\nregex = r'[0-9]{4,8}'\nre.fullmatch(regex, '869256')"
+             },
+             "preview":"869256"
+          }
+       ]

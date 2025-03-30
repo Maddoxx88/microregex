@@ -14,9 +14,9 @@ import {
 	FormLabel,
 	Grid,
 	GridItem,
+	useColorModeValue as lightDarkValue,
 	Spinner,
 	Text,
-	useColorModeValue as lightDarkValue,
 	useDisclosure,
 	useMediaQuery,
 	useToken,
@@ -27,13 +27,15 @@ import { createFilter, MultiValue, Select, SingleValue } from "chakra-react-sele
 import _, { debounce, throttle } from "lodash";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Card from "../components/card";
-import { PATTERNS, PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
+import { PATTERNS_AND_TAGS_Q, PATTERNS_LIKE } from "../graphql/queries";
 import { OptionType } from "../types";
 import { tagsObject } from "../utils/tags";
 
 import { SiJavascript, SiPython } from "react-icons/si";
 import InfoModal from "../components/modal";
 import Search from "../components/search";
+
+import regexData from '../data/regex.json';
 
 type Filter = {
 	search: string;
@@ -255,17 +257,15 @@ export default function HomePage() {
 	}, []);
 
 	useEffect(() => {
-		async function anyNameFunction() {
-			const { data } = await nhost.graphql.request(PATTERNS);
-
-			if (data?.patterns) {
-				setPatternList(data.patterns);
-				setSearchLoading(false);
-			}
+		async function processPatterns() {
+		  if (Array.isArray(regexData)) {
+			setPatternList(regexData as Pattern[]);
+			setSearchLoading(false);
+		  }
 		}
-
-		anyNameFunction();
-	}, [nhost.graphql]);
+	  
+		processPatterns()
+	  }, [regexData]);
 
 	return (
 		<Flex flexDir="column" align="center" w="100vw" pt="42px" pb={10} pr={{ base: 0, md: 4 }}>
